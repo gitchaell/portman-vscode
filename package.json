@@ -4,12 +4,22 @@
 	"description": "A VSCode extension for managing ports on your computer. Monitor and control running ports with ease, enhancing your development workflow.",
 	"version": "0.0.1",
 	"author": "Michaell Alavedra",
-	"publisher": "gitchell",
+	"publisher": "gitchaell",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/gitchaell/portman-vscode"
 	},
+	"keywords": [
+		"ports",
+		"running",
+		"kill",
+		"administration",
+		"development",
+		"utilities",
+		"tools"
+	],
+	"pricing": "Free",
 	"engines": {
 		"vscode": "^1.81.0"
 	},
@@ -20,11 +30,66 @@
 	"activationEvents": [],
 	"main": "./dist/extension.js",
 	"contributes": {
-		"views": {
-			"explorer": [
+		"commands": [
+			{
+				"command": "portman.refresh",
+				"title": "Refresh Ports",
+				"icon": "$(debug-restart)"
+			},
+			{
+				"command": "portman.kill",
+				"title": "Kill Port",
+				"icon": "$(debug-stop)"
+			}
+		],
+		"viewsContainers": {
+			"activitybar": [
 				{
-					"id": "exampleList",
-					"name": "Example List"
+					"id": "portman-view",
+					"title": "Portman",
+					"icon": "assets/icons/logo.svg"
+				}
+			],
+			"panel": [
+				{
+					"id": "portman-view",
+					"title": "Portman",
+					"icon": "assets/icons/logo.svg"
+				}
+			]
+		},
+		"views": {
+			"portman-view": [
+				{
+					"id": "portman",
+					"name": "Portman",
+					"contextualTitle": "Portman",
+					"visibility": "visible",
+					"icon": "assets/icons/logo.svg"
+				}
+			]
+		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "portman.refresh",
+					"when": "view == portman",
+					"group": "navigation"
+				},
+				{
+					"command": "portman.refresh",
+					"when": "view == portman"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "portman.kill",
+					"when": "view == portman && viewItem == port",
+					"group": "inline"
+				},
+				{
+					"command": "portman.kill",
+					"when": "view == portman && viewItem == port"
 				}
 			]
 		}
@@ -34,8 +99,8 @@
 		"compile": "webpack",
 		"watch": "webpack --watch",
 		"package": "webpack --mode production --devtool hidden-source-map",
-		"compile-tests": "tsc -p . --outDir out",
-		"watch-tests": "tsc -p . -w --outDir out",
+		"compile-tests": "tsc -p . --outDir dist",
+		"watch-tests": "tsc -p . -w --outDir dist",
 		"pretest": "npm run compile-tests && npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
 		"test": "node ./out/test/runTest.js"
