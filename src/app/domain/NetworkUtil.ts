@@ -1,5 +1,5 @@
 const PORT_REGEX = /:(\d{1,5}|\*)$/;
-const PROCESS_REGEX = /^(\d+)\/(.+)$/;
+const PROCESS_REGEX = /(\d+)\/(.+)/;
 
 export class NetworkUtil {
 	/**

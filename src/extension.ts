@@ -4,6 +4,8 @@ import { LinuxPortRepository } from './app/infrastructure/LinuxPortRepository';
 import { WindowsPortRepository } from './app/infrastructure/WindowsPortRepository';
 import { DefaultPortRepository } from './app/infrastructure/DefaultPortRepository';
 import { PortRepository } from './app/domain/PortRepository';
+import { PortNode } from './app/infrastructure/PortNode';
+import { Port } from './app/domain/Port';
 
 export function activate(context: vscode.ExtensionContext) {
 	const portRepository: PortRepository = {
@@ -24,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	vscode.window.registerTreeDataProvider('portman', portProvider);
 
-	const view = vscode.window.createTreeView('portman', {
+	const treeView = vscode.window.createTreeView('portman', {
 		treeDataProvider: portProvider,
 	});
 
@@ -32,11 +34,50 @@ export function activate(context: vscode.ExtensionContext) {
 		portProvider.refresh()
 	);
 
-	vscode.commands.registerCommand('portman.kill', () => {
-		// portRepository.kill();
+	vscode.commands.registerCommand('portman.showInfo', (node: PortNode) => {
+		vscode.window.showInformationMessage(node.port.tooltip);
 	});
 
-	context.subscriptions.push(view);
+	vscode.commands.registerCommand('portman.kill', async (node: PortNode) => {
+		let port: Port | null = null;
+
+		if (!node) {
+			const nodeSelected = await vscode.window.showQuickPick(
+				portProvider.getQuickItems(),
+				{
+					placeHolder: 'Select process/port to kill ...',
+					canPickMany: false,
+				}
+			);
+
+			port = nodeSelected?.port || null;
+		} else {
+			port = node.port;
+		}
+
+		if (!port) {
+			vscode.window.showErrorMessage('No process/port selected');
+			return;
+		}
+
+		const result = await vscode.window.showWarningMessage(
+			`Are you sure you want to stop process ${port.label}?`,
+			{ modal: true },
+			'Kill Process'
+		);
+
+		if (result === 'Kill Process') {
+			await portProvider.kill(port);
+
+			portProvider.refresh();
+
+			vscode.window.showInformationMessage(
+				`The process/port ${port.label} has been stopped`
+			);
+		}
+	});
+
+	context.subscriptions.push(treeView);
 }
 
 export function deactivate() {}

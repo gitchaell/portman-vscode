@@ -7,15 +7,17 @@ import { LinuxPortTransformer } from './LinuxPortTransformer';
 import { CommandExecutionError } from '../../shared/domain/CommandExecutionError';
 
 const execute = promisify(exec);
-const command = 'sudo netstat --numeric --listening --program --tcp --udp';
+const command = {
+	getAll: () => `sudo netstat --numeric --listening --program --tcp --udp`,
+	kill: (pid: string) => `sudo kill ${pid}`,
+};
 
 export class LinuxPortRepository implements PortRepository {
 	async getAll(): Promise<Port[]> {
-		return execute(command).then(({ stdout, stderr }) => {
+		return execute(command.getAll()).then(({ stdout, stderr }) => {
 			if (stderr) {
-				console.log(stderr);
 				throw new CommandExecutionError(
-					`The command executed <${command}> has failed.`
+					`The command executed <${command}> has failed. ${stderr}`
 				);
 			}
 
@@ -27,6 +29,6 @@ export class LinuxPortRepository implements PortRepository {
 	}
 
 	async kill(port: Port): Promise<void> {
-		throw new Error(`Method not implemented. ${port.label}`);
+		return execute(command.kill(port.process.id.value)).then(console.log);
 	}
 }

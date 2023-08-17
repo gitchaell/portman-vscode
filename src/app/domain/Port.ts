@@ -17,7 +17,7 @@ export class Port extends AggregateRoot {
 	}
 
 	get label(): string {
-		return `${this.process.program.value} (${this.process.id.value}) ─ ${this.local.host.value}:${this.local.port.value}`;
+		return `${this.process.program.value} (${this.process.id.value}) ─ ${this.local.host.value}:${this.local.port.value} ─ ${this.protocol.value}`;
 	}
 
 	get tooltip(): string {

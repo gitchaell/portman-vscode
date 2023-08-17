@@ -1,3 +1,3 @@
 export interface Command {
-	run(): Promise<void>;
+	run(...args: any[]): Promise<void>;
 }

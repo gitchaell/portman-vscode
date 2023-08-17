@@ -9,16 +9,14 @@ export class PortNode extends TreeItem {
 
 		this.id = this.port.id.value;
 		this.tooltip = this.port.tooltip;
+
+		this.iconPath = join(__filename, '..', '..', 'assets', 'icons', 'port.svg');
+		this.contextValue = 'port';
+		this.command = {
+			command: 'portman.showInfo',
+			title: '',
+			arguments: [this],
+		};
 	}
 
-	readonly iconPath = join(
-		__filename,
-		'..',
-		'..',
-		'assets',
-		'icons',
-		'port.svg'
-	);
-
-	readonly contextValue = 'port';
 }
