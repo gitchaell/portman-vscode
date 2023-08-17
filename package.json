@@ -2,7 +2,7 @@
 	"name": "portman",
 	"displayName": "Portman",
 	"description": "A VSCode extension for managing ports on your computer. Monitor and control running ports with ease, enhancing your development workflow.",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"author": "Michaell Alavedra",
 	"publisher": "gitchaell",
 	"license": "MIT",
@@ -84,12 +84,12 @@
 			"view/item/context": [
 				{
 					"command": "portman.kill",
-					"when": "view == portman && viewItem == port",
+					"when": "view == portman",
 					"group": "inline"
 				},
 				{
 					"command": "portman.kill",
-					"when": "view == portman && viewItem == port"
+					"when": "view == portman"
 				}
 			]
 		}

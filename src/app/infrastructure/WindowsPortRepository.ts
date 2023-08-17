@@ -16,6 +16,6 @@ export class WindowsPortRepository implements PortRepository {
 	}
 
 	async kill(port: Port): Promise<void> {
-		throw new Error('Method not implemented.');
+		throw new Error(`Method not implemented. ${port.label}`);
 	}
 }

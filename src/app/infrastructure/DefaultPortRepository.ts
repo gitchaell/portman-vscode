@@ -6,5 +6,7 @@ export class DefaultPortRepository implements PortRepository {
 		return [];
 	}
 
-	async kill(port: Port): Promise<void> {}
+	async kill(port: Port): Promise<void> {
+		throw new Error(`Method not implemented. ${port.label}`);
+	}
 }

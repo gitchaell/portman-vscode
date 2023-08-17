@@ -2,48 +2,61 @@ import { AggregateRoot } from '../../shared/domain/AggregateRoot';
 import { StringValueObject } from '../../shared/domain/value-object/StringValueObject';
 import { Uuid } from '../../shared/domain/value-object/Uuid';
 import { Address, AddressHost, AddressPort } from './Address';
+import { Process, ProcessId, ProcessProgram } from './Process';
 
 export class Port extends AggregateRoot {
 	constructor(
 		public readonly id: PortId,
+		public readonly process: Process,
 		public readonly protocol: Protocol,
-		public readonly localAddress: Address,
-		public readonly remoteAddress: Address,
+		public readonly local: Address,
+		public readonly remote: Address,
 		public readonly status: PortStatus
 	) {
 		super();
 	}
 
 	get label(): string {
-		return `${this.localAddress.port.value} ─ ${this.localAddress.host.value} ─ ${this.protocol.value}`;
+		return `${this.process.program.value} (${this.process.id.value}) ─ ${this.local.host.value}:${this.local.port.value}`;
 	}
 
 	get tooltip(): string {
-		return `
-Protocol        ${this.protocol.value}
-Local Address   ${this.localAddress.host.value}:${this.localAddress.port.value}
-Remote Address  ${this.remoteAddress.host.value}:${this.remoteAddress.port.value}
-Status          ${this.status.value}`;
+		let label = '';
+
+		label += `Process ID ─ ${this.process.id.value}\n`;
+		label += `Program ─ ${this.process.program.value}\n`;
+		label += `Protocol ─ ${this.protocol.value}\n`;
+		label += `Local Address ─ ${this.local.host.value}:${this.local.port.value}\n`;
+		label += `Remote Address ─ ${this.remote.host.value}:${this.remote.port.value}\n`;
+		label += `Status ─ ${this.status.value}\n`;
+
+		return label;
 	}
 
 	static fromPrimitives(port: {
+		processId: string;
+		processProgram: string;
 		protocol: string;
-		localAddressHost: string;
-		localAddressPort: string;
-		remoteAddressHost: string;
-		remoteAddressPort: string;
+		localHost: string;
+		localPort: string;
+		remoteHost: string;
+		remotePort: string;
 		status: string;
 	}): Port {
 		return new Port(
 			PortId.random(),
+			new Process(
+				new ProcessId(port.processId),
+				new ProcessProgram(port.processProgram)
+			),
 			new Protocol(port.protocol),
 			new Address(
-				new AddressHost(port.localAddressHost),
-				new AddressPort(port.localAddressPort)
+				new AddressHost(port.localHost),
+				new AddressPort(port.localPort)
 			),
 			new Address(
-				new AddressHost(port.remoteAddressHost),
-				new AddressPort(port.remoteAddressPort)
+				new AddressHost(port.remoteHost),
+				new AddressPort(port.remotePort)
 			),
 			new PortStatus(port.status)
 		);
@@ -54,12 +67,12 @@ Status          ${this.status.value}`;
 			id: this.id.value,
 			protocol: this.protocol.value,
 			localAddress: {
-				host: this.localAddress.host.value,
-				port: this.localAddress.port.value,
+				host: this.local.host.value,
+				port: this.local.port.value,
 			},
 			remoteAddres: {
-				host: this.remoteAddress.host.value,
-				port: this.remoteAddress.port.value,
+				host: this.remote.host.value,
+				port: this.remote.port.value,
 			},
 			status: this.status.value,
 		};
