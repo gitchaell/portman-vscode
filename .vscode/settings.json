@@ -11,5 +11,6 @@
 	// Turn off tsc task auto detection since we have the necessary tasks as npm scripts
 	"typescript.tsc.autoDetect": "off",
 	"editor.fontLigatures": true,
-	"editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace"
+	"editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace",
+	"editor.linkedEditing": true
 }

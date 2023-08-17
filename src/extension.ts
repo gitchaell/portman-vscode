@@ -1,11 +1,26 @@
 import * as vscode from 'vscode';
-import {
-	PortNode,
-	PortProvider,
-} from './app/infrastructure/providers/PortProvider';
+import { PortProvider } from './app/infrastructure/PortProvider';
+import { LinuxPortRepository } from './app/infrastructure/LinuxPortRepository';
+import { WindowsPortRepository } from './app/infrastructure/WindowsPortRepository';
+import { DefaultPortRepository } from './app/infrastructure/DefaultPortRepository';
+import { PortRepository } from './app/domain/PortRepository';
 
 export function activate(context: vscode.ExtensionContext) {
-	const portProvider = new PortProvider();
+	const portRepository: PortRepository = {
+		aix: new DefaultPortRepository(),
+		android: new DefaultPortRepository(),
+		cygwin: new DefaultPortRepository(),
+		darwin: new DefaultPortRepository(),
+		freebsd: new DefaultPortRepository(),
+		haiku: new DefaultPortRepository(),
+		linux: new LinuxPortRepository(),
+		netbsd: new DefaultPortRepository(),
+		openbsd: new DefaultPortRepository(),
+		sunos: new DefaultPortRepository(),
+		win32: new WindowsPortRepository(),
+	}[process.platform];
+
+	const portProvider = new PortProvider(portRepository);
 
 	vscode.window.registerTreeDataProvider('portman', portProvider);
 
@@ -18,14 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 	vscode.commands.registerCommand('portman.kill', () => {
-		// TODO: request port number input
-
-		// if (!node) {
-		// 	vscode.window.showErrorMessage('Port not selected');
-		// 	return;
-		// }
-
-		// vscode.window.showInformationMessage(`Killing port <${node.label}>`);
+		// portRepository.kill();
 	});
 
 	context.subscriptions.push(view);
