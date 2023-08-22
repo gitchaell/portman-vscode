@@ -33,12 +33,12 @@
 		"commands": [
 			{
 				"command": "portman.refresh",
-				"title": "Refresh Ports",
+				"title": "Portman: Refresh Ports",
 				"icon": "$(debug-restart)"
 			},
 			{
 				"command": "portman.kill",
-				"title": "Kill Port",
+				"title": "Portman: Kill Port",
 				"icon": "$(debug-stop)"
 			}
 		],

@@ -6,7 +6,9 @@ export class ProcessTreeItem extends TreeItem {
 	constructor(public readonly process: Process) {
 		super(process.label, TreeItemCollapsibleState.None);
 
-		this.id = this.process.id.value;
+		this.id = process.id.value;
+		this.description = process.description;
+		this.tooltip = process.tooltip;
 
 		this.iconPath = new ThemeIcon(process.icon);
 
