@@ -3,7 +3,9 @@ import { ProcessRepository } from '../domain/ProcessRepository';
 
 export class DefaultProcessRepository implements ProcessRepository {
 	async getAll(): Promise<Process[]> {
-		return [];
+		throw new Error(
+			`DefaultProcessRepository.getAll() method not implemented.`
+		);
 	}
 
 	async kill(_process: Process): Promise<void> {

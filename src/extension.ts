@@ -11,15 +11,15 @@ import { Process } from './app/domain/Process';
 export function activate(context: vscode.ExtensionContext) {
 	const processRepository: ProcessRepository = {
 		aix: new DefaultProcessRepository(),
-		android: new DefaultProcessRepository(),
-		cygwin: new DefaultProcessRepository(),
-		darwin: new DefaultProcessRepository(),
-		freebsd: new DefaultProcessRepository(),
-		haiku: new DefaultProcessRepository(),
+		android: new LinuxProcessRepository(),
+		cygwin: new LinuxProcessRepository(),
+		darwin: new LinuxProcessRepository(),
+		freebsd: new LinuxProcessRepository(),
+		haiku: new LinuxProcessRepository(),
 		linux: new LinuxProcessRepository(),
-		netbsd: new DefaultProcessRepository(),
-		openbsd: new DefaultProcessRepository(),
-		sunos: new DefaultProcessRepository(),
+		netbsd: new LinuxProcessRepository(),
+		openbsd: new LinuxProcessRepository(),
+		sunos: new LinuxProcessRepository(),
 		win32: new WindowsProcessRepository(),
 	}[process.platform];
 
