@@ -19,6 +19,10 @@ export class Process extends AggregateRoot {
 		super();
 	}
 
+	get icon(): string {
+		return 'plug';
+	}
+
 	get label(): string {
 		let content = '';
 

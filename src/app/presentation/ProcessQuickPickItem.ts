@@ -20,6 +20,6 @@ export class ProcessQuickPickItem implements QuickPickItem {
 	constructor(public readonly process: Process) {
 		this.label = process.label;
 
-		this.iconPath = { id: 'ports-view-icon' };
+		this.iconPath = new ThemeIcon(process.icon);
 	}
 }

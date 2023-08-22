@@ -1,4 +1,4 @@
-import { TreeItem, TreeItemCollapsibleState } from 'vscode';
+import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from 'vscode';
 
 import { Process } from '../domain/Process';
 
@@ -8,7 +8,7 @@ export class ProcessTreeItem extends TreeItem {
 
 		this.id = this.process.id.value;
 
-		this.iconPath = { id: 'ports-view-icon' };
+		this.iconPath = new ThemeIcon(process.icon);
 
 		this.contextValue = 'process';
 

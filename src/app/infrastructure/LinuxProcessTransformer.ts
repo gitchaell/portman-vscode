@@ -5,7 +5,7 @@ export class LinuxProcessTransformer implements ProcessTransformer {
 	regExp = {
 		port: /:(\d{1,5}|\*)$/,
 		process: /(\d+)\/(.+)/,
-		separator: /\s{2,}/,
+		separator: /\s+/,
 	};
 
 	/**
