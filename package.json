@@ -33,12 +33,12 @@
 		"commands": [
 			{
 				"command": "portman.refresh",
-				"title": "Portman: Refresh Ports",
+				"title": "Portman: Refresh",
 				"icon": "$(debug-restart)"
 			},
 			{
 				"command": "portman.kill",
-				"title": "Portman: Kill Port",
+				"title": "Portman: Kill Process",
 				"icon": "$(debug-stop)"
 			}
 		],
@@ -72,7 +72,7 @@
 		"viewsWelcome": [
 			{
 				"view": "portman",
-				"contents": "No running ports found.\n[Refresh](command:portman.refresh)"
+				"contents": "No running process found.\n[Refresh](command:portman.refresh)"
 			}
 		],
 		"menus": {
