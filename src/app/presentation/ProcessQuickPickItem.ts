@@ -3,27 +3,23 @@ import {
 	QuickInputButton,
 	QuickPickItemKind,
 	ThemeIcon,
-	Uri,
 } from 'vscode';
-import { join } from 'node:path';
 
-import { Port } from '../domain/Port';
+import { Process } from '../domain/Process';
 
-export class PortQuickItem implements QuickPickItem {
+export class ProcessQuickPickItem implements QuickPickItem {
 	readonly label: string;
 	readonly kind?: QuickPickItemKind;
-	readonly iconPath?: Uri;
+	readonly iconPath?: ThemeIcon;
 	readonly description?: string;
 	readonly detail?: string;
 	readonly picked?: boolean;
 	readonly alwaysShow?: boolean;
 	readonly buttons?: readonly QuickInputButton[];
 
-	constructor(public readonly port: Port) {
-		this.label = this.port.label;
+	constructor(public readonly process: Process) {
+		this.label = process.label;
 
-		this.iconPath = Uri.file(
-			join(__filename, '..', '..', 'assets', 'icons', 'port.svg')
-		);
+		this.iconPath = { id: 'ports-view-icon' };
 	}
 }

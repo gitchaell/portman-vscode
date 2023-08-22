@@ -1,33 +1,33 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 
-import { PortRepository } from '../../app/domain/PortRepository';
-import { DefaultPortRepository } from '../../app/infrastructure/DefaultPortRepository';
-import { LinuxPortRepository } from '../../app/infrastructure/LinuxPortRepository';
-import { WindowsPortRepository } from '../../app/infrastructure/WindowsPortRepository';
+import { DefaultProcessRepository } from '../../app/infrastructure/DefaultProcessRepository';
+import { ProcessRepository } from '../../app/domain/ProcessRepository';
+import { LinuxProcessRepository } from '../../app/infrastructure/LinuxProcessRepository';
+import { WindowsProcessRepository } from '../../app/infrastructure/WindowsProcessRepository';
 
 suite('PortMan Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
-	let portRepository: PortRepository;
+	let portRepository: ProcessRepository;
 
 	beforeEach(() => {
 		portRepository = {
-			aix: new DefaultPortRepository(),
-			android: new DefaultPortRepository(),
-			cygwin: new DefaultPortRepository(),
-			darwin: new DefaultPortRepository(),
-			freebsd: new DefaultPortRepository(),
-			haiku: new DefaultPortRepository(),
-			linux: new LinuxPortRepository(),
-			netbsd: new DefaultPortRepository(),
-			openbsd: new DefaultPortRepository(),
-			sunos: new DefaultPortRepository(),
-			win32: new WindowsPortRepository(),
+			aix: new DefaultProcessRepository(),
+			android: new DefaultProcessRepository(),
+			cygwin: new DefaultProcessRepository(),
+			darwin: new DefaultProcessRepository(),
+			freebsd: new DefaultProcessRepository(),
+			haiku: new DefaultProcessRepository(),
+			linux: new LinuxProcessRepository(),
+			netbsd: new DefaultProcessRepository(),
+			openbsd: new DefaultProcessRepository(),
+			sunos: new DefaultProcessRepository(),
+			win32: new WindowsProcessRepository(),
 		}[process.platform];
 	});
 
-	describe('GetAllPorts Test', () => {
+	describe('GetAllProcesses Test', () => {
 		test('Should list active ports', async () => {
 			try {
 				await portRepository.getAll();

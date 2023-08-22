@@ -1,11 +1,11 @@
 import { Command } from '../../shared/application/Command';
-import { Port } from '../domain/Port';
-import { PortRepository } from '../domain/PortRepository';
+import { Process } from '../domain/Process';
+import { ProcessRepository } from '../domain/ProcessRepository';
 
-export class KillPort implements Command {
-	constructor(private repository: PortRepository) {}
+export class KillProcess implements Command {
+	constructor(private repository: ProcessRepository) {}
 
-	async run(port: Port): Promise<void> {
+	async run(port: Process): Promise<void> {
 		await this.repository.kill(port);
 	}
 }

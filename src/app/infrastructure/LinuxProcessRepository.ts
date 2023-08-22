@@ -1,9 +1,9 @@
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 
-import { Port } from '../domain/Port';
-import { PortRepository } from '../domain/PortRepository';
-import { LinuxPortTransformer } from './LinuxPortTransformer';
+import { Process } from '../domain/Process';
+import { ProcessRepository } from '../domain/ProcessRepository';
+import { LinuxProcessTransformer } from './LinuxProcessTransformer';
 import { CommandExecutionError } from '../../shared/domain/CommandExecutionError';
 
 const execute = promisify(exec);
@@ -12,8 +12,8 @@ const command = {
 	kill: (pid: string) => `sudo kill ${pid}`,
 };
 
-export class LinuxPortRepository implements PortRepository {
-	async getAll(): Promise<Port[]> {
+export class LinuxProcessRepository implements ProcessRepository {
+	async getAll(): Promise<Process[]> {
 		return execute(command.getAll()).then(({ stdout, stderr }) => {
 			if (stderr) {
 				throw new CommandExecutionError(
@@ -21,14 +21,14 @@ export class LinuxPortRepository implements PortRepository {
 				);
 			}
 
-			const portTransformer = new LinuxPortTransformer();
-			const ports = portTransformer.transform(stdout);
+			const transformer = new LinuxProcessTransformer();
+			const ports = transformer.transform(stdout);
 
 			return ports;
 		});
 	}
 
-	async kill(port: Port): Promise<void> {
-		return execute(command.kill(port.process.id.value)).then(console.log);
+	async kill(process: Process): Promise<void> {
+		return execute(command.kill(process.id.value)).then(console.log);
 	}
 }
