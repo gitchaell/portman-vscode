@@ -26,8 +26,7 @@ export class Process extends AggregateRoot {
 	get label(): string {
 		let content = '';
 
-		content += `${this.program.value} (${this.id.value}) ─ `;
-		content += `${this.protocol.value}`;
+		content += `${this.local.host.value}:${this.local.port}`;
 
 		return content;
 	}
@@ -35,7 +34,8 @@ export class Process extends AggregateRoot {
 	get description(): string {
 		let content = '';
 
-		content += `${this.local.host.value}:${this.local.port}`;
+		content += `${this.program.value} (${this.id.value}) ─ `;
+		content += `${this.protocol.value}`;
 
 		return content;
 	}
