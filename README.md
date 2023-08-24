@@ -12,10 +12,10 @@ Manage processes/ports running on your computer.
 
 ![Show process info](https://github.com/gitchaell/portman-vscode/blob/develop/assets/show-process-info.gif)
 
-## Kill processes from activities bar
+## Kill process from activity bar
 
 ![Kill process](https://github.com/gitchaell/portman-vscode/blob/develop/assets/kill-process-from-activity-bar.gif)
 
-## Search and kill processes from prompt
+## Search and kill process from prompt
 
 ![Search process](https://github.com/gitchaell/portman-vscode/blob/develop/assets/kill-process-from-prompt.gif)
