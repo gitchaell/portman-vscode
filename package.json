@@ -1,15 +1,16 @@
 {
 	"name": "portman",
 	"displayName": "Portman",
-	"description": "A VSCode extension for managing ports on your computer. Monitor and control running ports with ease, enhancing your development workflow.",
-	"version": "0.9.0",
+	"description": "Manage the processes and ports running on your computer.",
+	"version": "1.0.0",
 	"author": "Michaell Alavedra",
-	"publisher": "gitchaell",
+	"publisher": "Michaell Alavedra",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/gitchaell/portman-vscode"
 	},
+	"homepage": "https://github.com/gitchaell/portman-vscode",
 	"keywords": [
 		"ports",
 		"running",
@@ -27,8 +28,9 @@
 		"Visualization",
 		"Other"
 	],
-	"activationEvents": [],
+	"icon": "./assets/logo.png",
 	"main": "./dist/extension.js",
+	"activationEvents": [],
 	"contributes": {
 		"commands": [
 			{
@@ -47,14 +49,14 @@
 				{
 					"id": "portman-view",
 					"title": "Portman",
-					"icon": "assets/icons/logo.svg"
+					"icon": "assets/icon.svg"
 				}
 			],
 			"panel": [
 				{
 					"id": "portman-view",
 					"title": "Portman",
-					"icon": "assets/icons/logo.svg"
+					"icon": "assets/icon.svg"
 				}
 			]
 		},
@@ -65,7 +67,7 @@
 					"name": "Portman",
 					"contextualTitle": "Portman",
 					"visibility": "visible",
-					"icon": "assets/icons/logo.svg"
+					"icon": "assets/icon.svg"
 				}
 			]
 		},

@@ -1,8 +1,8 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 
-import { DefaultProcessRepository } from '../../app/infrastructure/DefaultProcessRepository';
 import { ProcessRepository } from '../../app/domain/ProcessRepository';
+import { NotImplementedProcessRepository } from '../../app/infrastructure/NotImplementedProcessRepository';
 import { LinuxProcessRepository } from '../../app/infrastructure/LinuxProcessRepository';
 import { WindowsProcessRepository } from '../../app/infrastructure/WindowsProcessRepository';
 
@@ -13,16 +13,16 @@ suite('PortMan Test Suite', () => {
 
 	beforeEach(() => {
 		portRepository = {
-			aix: new DefaultProcessRepository(),
-			android: new DefaultProcessRepository(),
-			cygwin: new DefaultProcessRepository(),
-			darwin: new DefaultProcessRepository(),
-			freebsd: new DefaultProcessRepository(),
-			haiku: new DefaultProcessRepository(),
+			aix: new NotImplementedProcessRepository(),
+			android: new LinuxProcessRepository(),
+			cygwin: new LinuxProcessRepository(),
+			darwin: new LinuxProcessRepository(),
+			freebsd: new LinuxProcessRepository(),
+			haiku: new LinuxProcessRepository(),
 			linux: new LinuxProcessRepository(),
-			netbsd: new DefaultProcessRepository(),
-			openbsd: new DefaultProcessRepository(),
-			sunos: new DefaultProcessRepository(),
+			netbsd: new LinuxProcessRepository(),
+			openbsd: new LinuxProcessRepository(),
+			sunos: new LinuxProcessRepository(),
 			win32: new WindowsProcessRepository(),
 		}[process.platform];
 	});
