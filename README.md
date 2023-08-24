@@ -6,17 +6,17 @@ Manage processes/ports running on your computer.
 
 ## View and refresh all running processes
 
-![Refresh processes](https://github.com/gitchaell/portman-vscode/tree/develop/assets/search-processes.webm)
+![Refresh processes](https://github.com/gitchaell/portman-vscode/blob/develop/assets/search-processes.webm)
 
 
 ## View details of each process
 
-![Show process info](assets/show-process-info.gif)
+![Show process info](https://github.com/gitchaell/portman-vscode/blob/develop/assets/show-process-info.webm)
 
 ## Kill processes from activities bar
 
-![Kill process](assets/kill-process-from-activities-bar.gif)
+![Kill process](https://github.com/gitchaell/portman-vscode/blob/develop/assets/kill-process-from-activity-bar.webm)
 
 ## Search and kill processes from prompt
 
-![Search process](assets/search-process-from-prompt.gif)
+![Search process](https://github.com/gitchaell/portman-vscode/blob/develop/assets/kill-process-from-prompt.webm)
