@@ -8,8 +8,8 @@ import { CommandExecutionError } from '../shared/domain/exceptions/CommandExecut
 
 const execute = promisify(exec);
 const command = {
-	getAll: () => `netstat --numeric --listening --program --tcp --udp | grep LISTEN | awk -v OFS='(|)' '{print $1, $2, $3, $4, $5, $6, $7}'`,
-	kill: (pid: string) => `kill ${pid}`,
+	getAll: () => `sudo netstat --numeric --listening --program --tcp --udp | grep LISTEN | awk -v OFS='(|)' '{print $1, $2, $3, $4, $5, $6, $7}'`,
+	kill: (pid: string) => `sudo kill ${pid}`,
 };
 
 export class LinuxProcessRepository implements ProcessRepository {
@@ -17,7 +17,7 @@ export class LinuxProcessRepository implements ProcessRepository {
 		return execute(command.getAll()).then(({ stdout, stderr }) => {
 			if (stderr) {
 				throw new CommandExecutionError(
-					`The command executed <${command}> has failed. ${stderr}`
+					`The command executed has failed. ${stderr}`
 				);
 			}
 

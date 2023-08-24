@@ -17,7 +17,7 @@ export class WindowsProcessRepository implements ProcessRepository {
 		execute(command.getAll()).then(({ stdout, stderr }) => {
 			if (stderr) {
 				throw new CommandExecutionError(
-					`The command executed <${command}> has failed. ${stderr}`
+					`The command executed has failed. ${stderr}`
 				);
 			}
 

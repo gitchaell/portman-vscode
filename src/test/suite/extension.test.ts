@@ -1,18 +1,17 @@
-import * as assert from 'assert';
-import * as vscode from 'vscode';
+import * as assert from 'node:assert';
+
+import { createServer } from 'node:http';
 
 import { ProcessRepository } from '../../app/domain/ProcessRepository';
 import { NotImplementedProcessRepository } from '../../app/infrastructure/NotImplementedProcessRepository';
 import { LinuxProcessRepository } from '../../app/infrastructure/LinuxProcessRepository';
 import { WindowsProcessRepository } from '../../app/infrastructure/WindowsProcessRepository';
 
-suite('PortMan Test Suite', () => {
-	vscode.window.showInformationMessage('Start all tests.');
-
-	let portRepository: ProcessRepository;
+suite('Portman Test Suite', () => {
+	let processRepository: ProcessRepository;
 
 	beforeEach(() => {
-		portRepository = {
+		processRepository = {
 			aix: new NotImplementedProcessRepository(),
 			android: new LinuxProcessRepository(),
 			cygwin: new LinuxProcessRepository(),
@@ -27,13 +26,63 @@ suite('PortMan Test Suite', () => {
 		}[process.platform];
 	});
 
-	describe('SearchProcesses Test', () => {
+	describe('Search Processes', () => {
 		test('Should list active processes', async () => {
 			try {
-				await portRepository.search();
+				const processes = await processRepository.search();
+
+				assert.ok(Array.isArray(processes), 'Processes should be an array');
+				assert.ok(
+					processes.length > 0,
+					'There should be at least one process listed'
+				);
 			} catch (error) {
 				assert.fail(`Error thrown: ${error}`);
 			}
+		});
+	});
+
+	describe('Kill Process', () => {
+		test('Kill process successfully', async () => {
+			await new Promise<void>(async (resolve, reject) => {
+				const port = '3000';
+				const server = createServer();
+
+				server.listen(port).on('connection', async () => {
+					try {
+						const processesBeforeKill = await processRepository.search();
+
+						const runningProcess = processesBeforeKill.find(
+							({ local }) => local.port.value === port
+						);
+
+						if (!runningProcess) {
+							throw new Error('Process not found');
+						}
+
+						await processRepository.kill(runningProcess);
+
+						const processesAfterKill = await processRepository.search();
+
+						const killedProcess = processesAfterKill.some(
+							({ local }) => local.port.value === port
+						);
+
+						assert.strictEqual(
+							killedProcess,
+							false,
+							'Process should be killed'
+						);
+
+						server.close();
+						resolve();
+					} catch (error) {
+						server.close();
+						reject();
+						assert.fail(`Error thrown: ${error}`);
+					}
+				});
+			});
 		});
 	});
 });
