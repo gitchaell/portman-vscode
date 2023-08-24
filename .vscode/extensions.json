@@ -8,6 +8,7 @@
     "yoavbls.pretty-ts-errors",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "jock.svg"
+    "jock.svg",
+    "njzy.stats-bar"
   ]
 }
