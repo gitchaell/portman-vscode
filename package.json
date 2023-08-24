@@ -1,7 +1,7 @@
 {
 	"name": "portman",
 	"displayName": "Portman",
-	"description": "Manage the processes and ports running on your computer.",
+	"description": "Manage processes/ports running on your computer.",
 	"version": "1.0.0",
 	"author": "Michaell Alavedra",
 	"publisher": "Michaell Alavedra",
