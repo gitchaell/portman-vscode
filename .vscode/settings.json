@@ -12,5 +12,14 @@
 	"typescript.tsc.autoDetect": "off",
 	"editor.fontLigatures": true,
 	"editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace",
-	"editor.linkedEditing": true
+	"editor.linkedEditing": true,
+	"editor.renderWhitespace": "all",
+	"files.autoSave": "off",
+	"editor.tabSize": 2,
+	"cSpell.words": [
+		"cygwin",
+		"findstr",
+		"portman",
+		"taskkill"
+	]
 }

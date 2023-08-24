@@ -27,14 +27,14 @@ export class ProcessTreeDataProvider implements TreeDataProvider<ProcessTreeItem
 	}
 
 	async getChildren(): Promise<ProcessTreeItem[]> {
-		const processes = await this.processRepository.getAll();
+		const processes = await this.processRepository.search();
 		const nodes = processes.map((process) => new ProcessTreeItem(process));
 
 		return nodes;
 	}
 
 	async getQuickItems(): Promise<ProcessQuickPickItem[]> {
-		const processes = await this.processRepository.getAll();
+		const processes = await this.processRepository.search();
 		const items = processes.map((process) => new ProcessQuickPickItem(process));
 
 		return items;

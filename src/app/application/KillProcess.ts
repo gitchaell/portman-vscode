@@ -1,4 +1,4 @@
-import { Command } from '../../shared/application/Command';
+import { Command } from '../shared/application/Command';
 import { Process } from '../domain/Process';
 import { ProcessRepository } from '../domain/ProcessRepository';
 

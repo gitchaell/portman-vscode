@@ -1,26 +1,25 @@
 import { Process } from '../domain/Process';
 import { ProcessTransformer } from '../domain/ProcessTransformer';
 
-export class LinuxProcessTransformer implements ProcessTransformer {
+export class WindowsProcessTransformer implements ProcessTransformer {
 	regExp = {
 		port: /:(\d{1,5}|\*)$/,
 		process: /(\d+)\/(.+)/,
-		separator: '(|)',
+		separator: /\s+/,
 		newLine: '\n',
 	};
 
 	transform(input: string): Process[] {
-		const lines = input.split(this.regExp.newLine).splice(2);
+		const lines = input.split(this.regExp.newLine).splice(4);
 
 		const processes: Process[] = [];
 
 		for (const line of lines) {
 			const parts = line.trim().split(this.regExp.separator);
 
-			const [protocol, , , localAddress, remoteAddress, status, process] =
+			const [protocol, localAddress, remoteAddress, status, id, program] =
 				parts;
 
-			const [id, program] = this.parseProcess(process);
 			const [localHost, localPort] = this.parseAddress(localAddress);
 			const [remoteHost, remotePort] = this.parseAddress(remoteAddress);
 
@@ -73,17 +72,5 @@ export class LinuxProcessTransformer implements ProcessTransformer {
 		const host = address.replace(match, '');
 
 		return [host, port];
-	}
-
-	parseProcess(process: string): [string, string] | [] {
-		const result = this.regExp.process.exec(process);
-
-		if (!result) {
-			return [];
-		}
-
-		const [, pid, program] = result;
-
-		return [pid, program];
 	}
 }

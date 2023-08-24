@@ -1,4 +1,4 @@
-import { AggregateRoot } from '../../shared/domain/AggregateRoot';
+import { AggregateRoot } from '../shared/domain/AggregateRoot';
 import { AddressHost } from './AddressHost';
 import { AddressPort } from './AddressPort';
 
@@ -8,12 +8,5 @@ export class Address extends AggregateRoot {
 		public readonly port: AddressPort
 	) {
 		super();
-	}
-
-	toPrimitives() {
-		return {
-			host: this.host.value,
-			port: this.port.value,
-		};
 	}
 }

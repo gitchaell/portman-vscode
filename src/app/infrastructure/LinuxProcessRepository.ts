@@ -4,16 +4,16 @@ import { promisify } from 'node:util';
 import { Process } from '../domain/Process';
 import { ProcessRepository } from '../domain/ProcessRepository';
 import { LinuxProcessTransformer } from './LinuxProcessTransformer';
-import { CommandExecutionError } from '../../shared/domain/CommandExecutionError';
+import { CommandExecutionError } from '../shared/domain/exceptions/CommandExecutionError';
 
 const execute = promisify(exec);
 const command = {
-	getAll: () => `sudo netstat --numeric --listening --program --tcp --udp`,
-	kill: (pid: string) => `sudo kill ${pid}`,
+	getAll: () => `netstat --numeric --listening --program --tcp --udp | grep LISTEN | awk -v OFS='(|)' '{print $1, $2, $3, $4, $5, $6, $7}'`,
+	kill: (pid: string) => `kill ${pid}`,
 };
 
 export class LinuxProcessRepository implements ProcessRepository {
-	async getAll(): Promise<Process[]> {
+	async search(): Promise<Process[]> {
 		return execute(command.getAll()).then(({ stdout, stderr }) => {
 			if (stderr) {
 				throw new CommandExecutionError(

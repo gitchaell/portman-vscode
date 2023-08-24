@@ -1,4 +1,4 @@
-import { InvalidArgumentError } from './InvalidArgumentError';
+import { InvalidArgumentError } from '../exceptions/InvalidArgumentError';
 
 type Primitives = String | string | number | Boolean | boolean | Date;
 

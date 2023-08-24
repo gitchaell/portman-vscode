@@ -1,16 +1,18 @@
 import * as vscode from 'vscode';
 
 import { ProcessRepository } from './app/domain/ProcessRepository';
-import { DefaultProcessRepository } from './app/infrastructure/DefaultProcessRepository';
+import { NotImplementedProcessRepository } from './app/infrastructure/NotImplementedProcessRepository';
 import { LinuxProcessRepository } from './app/infrastructure/LinuxProcessRepository';
 import { WindowsProcessRepository } from './app/infrastructure/WindowsProcessRepository';
 import { ProcessTreeDataProvider } from './app/presentation/ProcessTreeDataProvider';
-import { ProcessTreeItem } from './app/presentation/ProcessTreeItem';
-import { Process } from './app/domain/Process';
+import { ProcessTreeView } from './app/presentation/views/ProcessTreeView';
+import { KillProcessCommand } from './app/presentation/commands/KillProcessCommand';
+import { RefreshProcessesCommand } from './app/presentation/commands/RefreshProcessesCommand';
+import { ShowProcessInfoCommand } from './app/presentation/commands/ShowProcessInfoCommand';
 
 export function activate(context: vscode.ExtensionContext) {
-	const processRepository: ProcessRepository = {
-		aix: new DefaultProcessRepository(),
+	const repository: ProcessRepository = {
+		aix: new NotImplementedProcessRepository(),
 		android: new LinuxProcessRepository(),
 		cygwin: new LinuxProcessRepository(),
 		darwin: new LinuxProcessRepository(),
@@ -23,70 +25,15 @@ export function activate(context: vscode.ExtensionContext) {
 		win32: new WindowsProcessRepository(),
 	}[process.platform];
 
-	const processTreeDataProvider = new ProcessTreeDataProvider(
-		processRepository
-	);
+	const treeDataProvider = new ProcessTreeDataProvider(repository);
 
-	vscode.window.registerTreeDataProvider('portman', processTreeDataProvider);
+	new ProcessTreeView(context, treeDataProvider).register();
 
-	const treeView = vscode.window.createTreeView('portman', {
-		treeDataProvider: processTreeDataProvider,
-	});
+	new RefreshProcessesCommand(context, treeDataProvider).register();
 
-	vscode.commands.registerCommand('portman.refresh', () =>
-		processTreeDataProvider.refresh()
-	);
+	new ShowProcessInfoCommand(context, treeDataProvider).register();
 
-	vscode.commands.registerCommand(
-		'portman.showInfo',
-		(item: ProcessTreeItem) => {
-			vscode.window.showInformationMessage(item.process.tooltip);
-		}
-	);
-
-	vscode.commands.registerCommand(
-		'portman.kill',
-		async (item: ProcessTreeItem) => {
-			let process: Process | null = null;
-
-			if (!item) {
-				const nodeSelected = await vscode.window.showQuickPick(
-					processTreeDataProvider.getQuickItems(),
-					{
-						placeHolder: 'Select process to kill ...',
-						canPickMany: false,
-					}
-				);
-
-				process = nodeSelected?.process || null;
-			} else {
-				process = item.process;
-			}
-
-			if (!process) {
-				vscode.window.showErrorMessage('No process selected');
-				return;
-			}
-
-			const result = await vscode.window.showWarningMessage(
-				`Are you sure you want to stop process with ID ${process.id}?`,
-				{ modal: true },
-				'Kill Process'
-			);
-
-			if (result === 'Kill Process') {
-				await processTreeDataProvider.kill(process);
-
-				processTreeDataProvider.refresh();
-
-				vscode.window.showInformationMessage(
-					`The process with ID ${process.id} has been stopped`
-				);
-			}
-		}
-	);
-
-	context.subscriptions.push(treeView);
+	new KillProcessCommand(context, treeDataProvider).register();
 }
 
 export function deactivate() {}

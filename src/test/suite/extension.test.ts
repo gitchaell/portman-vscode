@@ -27,10 +27,10 @@ suite('PortMan Test Suite', () => {
 		}[process.platform];
 	});
 
-	describe('GetAllProcesses Test', () => {
-		test('Should list active ports', async () => {
+	describe('SearchProcesses Test', () => {
+		test('Should list active processes', async () => {
 			try {
-				await portRepository.getAll();
+				await portRepository.search();
 			} catch (error) {
 				assert.fail(`Error thrown: ${error}`);
 			}

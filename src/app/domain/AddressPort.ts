@@ -1,5 +1,5 @@
-import { InvalidArgumentError } from '../../shared/domain/value-object/InvalidArgumentError';
-import { StringValueObject } from '../../shared/domain/value-object/StringValueObject';
+import { InvalidArgumentError } from '../shared/domain/exceptions/InvalidArgumentError';
+import { StringValueObject } from '../shared/domain/value-object/StringValueObject';
 
 export class AddressPort extends StringValueObject {
 	constructor(readonly value: string) {
