@@ -2,11 +2,12 @@
 
 Manage processes/ports running on your computer.
 
-![Portman preview](assets/preview.png)
+![Portman preview](assets/cover.png)
 
 ## View and refresh all running processes
 
-![Refresh processes](assets/refresh-processes.gif)
+![Refresh processes](https://github.com/gitchaell/portman-vscode/tree/develop/assets/search-processes.webm)
+
 
 ## View details of each process
 
