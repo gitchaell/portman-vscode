@@ -8,8 +8,8 @@ import { WindowsProcessTransformer } from './WindowsProcessTransformer';
 
 const execute = promisify(exec);
 const command = {
-	getAll: () => `netstat -abfonp | findstr LISTENING`,
-	kill: (pid: string) => `taskkill -f -pid ${pid}`,
+	getAll: () => `netstat -a -b -n -o | findstr LISTENING`,
+	kill: (pid: string) => `taskkill /PID ${pid}`,
 };
 
 export class WindowsProcessRepository implements ProcessRepository {

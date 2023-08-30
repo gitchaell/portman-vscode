@@ -10,22 +10,20 @@ export class WindowsProcessTransformer implements ProcessTransformer {
 	};
 
 	transform(input: string): Process[] {
-		const lines = input.split(this.regExp.newLine).splice(4);
+		const lines = input.split(this.regExp.newLine);
 
 		const processes: Process[] = [];
 
 		for (const line of lines) {
 			const parts = line.trim().split(this.regExp.separator);
 
-			const [protocol, localAddress, remoteAddress, status, id, program] =
-				parts;
+			const [protocol, localAddress, remoteAddress, status, id] = parts;
 
 			const [localHost, localPort] = this.parseAddress(localAddress);
 			const [remoteHost, remotePort] = this.parseAddress(remoteAddress);
 
 			if (
 				!id ||
-				!program ||
 				!localPort ||
 				!localHost ||
 				!remotePort ||
@@ -42,7 +40,7 @@ export class WindowsProcessTransformer implements ProcessTransformer {
 			processes.push(
 				Process.fromPrimitives({
 					id,
-					program,
+					program: 'UNKNOWN',
 					protocol,
 					localHost,
 					localPort,

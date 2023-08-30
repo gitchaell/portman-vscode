@@ -2,7 +2,7 @@
 	"name": "portman",
 	"displayName": "Portman",
 	"description": "Manage processes/ports running on your computer.",
-	"version": "0.4.2",
+	"version": "0.5.0",
 	"author": "Michaell Alavedra",
 	"publisher": "MichaellAlavedraMunayco",
 	"license": "MIT",
