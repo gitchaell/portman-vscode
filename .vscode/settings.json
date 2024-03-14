@@ -25,5 +25,6 @@
 		"Munayco",
 		"portman",
 		"taskkill"
-	]
+	],
+	"editor.wordWrap": "on"
 }
