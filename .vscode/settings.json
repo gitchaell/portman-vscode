@@ -26,5 +26,6 @@
 		"portman",
 		"taskkill"
 	],
-	"editor.wordWrap": "on"
+	"editor.wordWrap": "on",
+	"conventionalCommits.scopes": ["assets"]
 }
