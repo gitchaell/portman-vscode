@@ -1,14 +1,13 @@
 {
-  // See http://go.microsoft.com/fwlink/?LinkId=827846
-  // for the documentation about the extensions.json format
-  "recommendations": [
-    "amodio.tsl-problem-matcher",
-    "streetsidesoftware.code-spell-checker",
-    "usernamehw.errorlens",
-    "yoavbls.pretty-ts-errors",
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
-    "jock.svg",
-    "njzy.stats-bar"
-  ]
+	"recommendations": [
+		"streetsidesoftware.code-spell-checker",
+		"usernamehw.errorlens",
+		"yoavbls.pretty-ts-errors",
+		"esbenp.prettier-vscode",
+		"dbaeumer.vscode-eslint",
+		"jock.svg",
+		"njzy.stats-bar",
+		"michaellalavedramunayco.angular-theme",
+		"miguelsolorio.symbols"
+	]
 }
