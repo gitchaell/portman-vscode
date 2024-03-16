@@ -27,5 +27,9 @@
 		"taskkill"
 	],
 	"editor.wordWrap": "on",
-	"conventionalCommits.scopes": ["assets"]
+	"conventionalCommits.scopes": ["assets"],
+	"editor.codeLens": false,
+	"editor.stickyScroll.scrollWithEditor": false,
+	"workbench.tree.enableStickyScroll": false,
+	"editor.stickyScroll.enabled": false
 }
