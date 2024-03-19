@@ -1,14 +1,13 @@
 import * as vscode from 'vscode';
-
-import { ProcessRepository } from './app/domain/ProcessRepository';
-import { NotImplementedProcessRepository } from './app/infrastructure/NotImplementedProcessRepository';
-import { LinuxProcessRepository } from './app/infrastructure/LinuxProcessRepository';
-import { WindowsProcessRepository } from './app/infrastructure/WindowsProcessRepository';
-import { ProcessTreeDataProvider } from './app/presentation/ProcessTreeDataProvider';
-import { ProcessTreeView } from './app/presentation/views/ProcessTreeView';
-import { KillProcessCommand } from './app/presentation/commands/KillProcessCommand';
-import { RefreshProcessesCommand } from './app/presentation/commands/RefreshProcessesCommand';
-import { ShowProcessInfoCommand } from './app/presentation/commands/ShowProcessInfoCommand';
+import { ProcessRepository } from './domain/ProcessRepository';
+import { NotImplementedProcessRepository } from './infrastructure/NotImplementedProcessRepository';
+import { LinuxProcessRepository } from './infrastructure/linux/LinuxProcessRepository';
+import { WindowsProcessRepository } from './infrastructure/windows/WindowsProcessRepository';
+import { ProcessTreeDataProvider } from './presentation/ProcessTreeDataProvider';
+import { ProcessTreeView } from './presentation/views/ProcessTreeView';
+import { RefreshProcessesCommand } from './presentation/commands/RefreshProcessesCommand';
+import { ShowProcessInfoCommand } from './presentation/commands/ShowProcessInfoCommand';
+import { KillProcessCommand } from './presentation/commands/KillProcessCommand';
 
 export function activate(context: vscode.ExtensionContext) {
 	const repository: ProcessRepository = {

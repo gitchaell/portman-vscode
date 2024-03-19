@@ -1,21 +1,13 @@
-# Portman
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=MichaellAlavedraMunayco.portman">
+    <img src="./assets/logo.png" width="120px" />
+  </a>
+</p>
 
-Manage processes/ports running on your computer.
+<h1 align="center">
+  Portman
+</h1>
+
+VS Code Plugin to manage processes/ports running on your device.
 
 ![Portman preview](./assets/cover.png)
-
-## View and refresh all running processes
-
-![Refresh processes](./assets/search-processes.gif)
-
-## View details of each process
-
-![Show process info](./assets/show-process-info.gif)
-
-## Kill process from activity bar
-
-![Kill process](./assets/kill-process-from-activity-bar.gif)
-
-## Search and kill process from prompt
-
-![Search process](./assets/kill-process-from-prompt.gif)

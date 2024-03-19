@@ -2,10 +2,10 @@ import * as assert from 'node:assert';
 
 import { createServer } from 'node:http';
 
-import { ProcessRepository } from '../../app/domain/ProcessRepository';
-import { NotImplementedProcessRepository } from '../../app/infrastructure/NotImplementedProcessRepository';
-import { LinuxProcessRepository } from '../../app/infrastructure/LinuxProcessRepository';
-import { WindowsProcessRepository } from '../../app/infrastructure/WindowsProcessRepository';
+import { ProcessRepository } from '@/domain/ProcessRepository';
+import { NotImplementedProcessRepository } from '@/infrastructure/NotImplementedProcessRepository';
+import { LinuxProcessRepository } from '@/infrastructure/linux/LinuxProcessRepository';
+import { WindowsProcessRepository } from '@/infrastructure/windows/WindowsProcessRepository';
 
 suite('Portman Test Suite', () => {
 	let processRepository: ProcessRepository;

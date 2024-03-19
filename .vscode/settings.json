@@ -11,7 +11,7 @@
 	// Turn off tsc task auto detection since we have the necessary tasks as npm scripts
 	"typescript.tsc.autoDetect": "off",
 	"editor.fontLigatures": true,
-	"editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', 'monospace', monospace",
+	"editor.fontFamily": "'JetBrains Mono', 'Droid Sans Mono', monospace",
 	"editor.linkedEditing": true,
 	"editor.renderWhitespace": "all",
 	"files.autoSave": "off",
@@ -25,5 +25,11 @@
 		"Munayco",
 		"portman",
 		"taskkill"
-	]
+	],
+	"editor.wordWrap": "on",
+	"conventionalCommits.scopes": ["assets"],
+	"editor.codeLens": false,
+	"editor.stickyScroll.scrollWithEditor": false,
+	"workbench.tree.enableStickyScroll": false,
+	"editor.stickyScroll.enabled": false
 }
