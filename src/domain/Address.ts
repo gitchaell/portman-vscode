@@ -1,6 +1,6 @@
-import { AggregateRoot } from '@/shared/domain/AggregateRoot';
-import { AddressHost } from './AddressHost';
-import { AddressPort } from './AddressPort';
+import { AggregateRoot } from "@/shared/domain/AggregateRoot";
+import { AddressHost } from "./AddressHost";
+import { AddressPort } from "./AddressPort";
 
 export class Address extends AggregateRoot {
 	constructor(

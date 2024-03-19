@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
-import { Command } from './Command';
+import { VSCommand } from './Command';
+import { KILL_COMMAND } from '../Constants';
 import { ProcessTreeItem } from '../ProcessTreeItem';
 import { Process } from '@/domain/Process';
-import { KILL_COMMAND } from '../Constants';
 
-export class KillProcessCommand extends Command {
+export class KillProcessCommand extends VSCommand {
 	register(): void {
 		const command = vscode.commands.registerCommand(
 			KILL_COMMAND,

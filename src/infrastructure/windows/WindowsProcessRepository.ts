@@ -1,9 +1,9 @@
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 
-import { CommandExecutionError } from '@/shared/domain/exceptions/CommandExecutionError';
-import { ProcessRepository } from '@/domain/ProcessRepository';
 import { Process } from '@/domain/Process';
+import { ProcessRepository } from '@/domain/ProcessRepository';
+import { CommandExecutionError } from '@/shared/domain/exceptions/CommandExecutionError';
 import { WindowsProcessTransformer } from './WindowsProcessTransformer';
 
 const execute = promisify(exec);

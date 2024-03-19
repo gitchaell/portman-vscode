@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
-import { Command } from './Command';
-import { ProcessTreeItem } from '../ProcessTreeItem';
+import { VSCommand } from './Command';
 import { SHOW_INFO_COMMAND } from '../Constants';
+import { ProcessTreeItem } from '../ProcessTreeItem';
 
-export class ShowProcessInfoCommand extends Command {
+export class ShowProcessInfoCommand extends VSCommand {
 	register(): void {
 		const command = vscode.commands.registerCommand(
 			SHOW_INFO_COMMAND,

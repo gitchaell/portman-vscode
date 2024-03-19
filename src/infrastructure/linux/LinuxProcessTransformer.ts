@@ -1,5 +1,5 @@
-import { Process } from "@/domain/Process";
-import { ProcessTransformer } from "@/domain/ProcessTransformer";
+import { Process } from '@/domain/Process';
+import { ProcessTransformer } from '@/domain/ProcessTransformer';
 
 export class LinuxProcessTransformer implements ProcessTransformer {
 	regExp = {

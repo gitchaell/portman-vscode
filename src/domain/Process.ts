@@ -1,11 +1,11 @@
 import { AggregateRoot } from '@/shared/domain/AggregateRoot';
 import { ProcessId } from './ProcessId';
 import { ProcessProgram } from './ProcessProgram';
-import { ProcessStatus } from './ProcessStatus';
 import { Protocol } from './Protocol';
 import { Address } from './Address';
 import { AddressHost } from './AddressHost';
 import { AddressPort } from './AddressPort';
+import { ProcessStatus } from './ProcessStatus';
 
 export class Process extends AggregateRoot {
 	static fromPrimitives(process: {

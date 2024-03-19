@@ -4,7 +4,6 @@ import {
 	QuickPickItemKind,
 	ThemeIcon,
 } from 'vscode';
-
 import { Process } from '@/domain/Process';
 
 export class ProcessQuickPickItem implements QuickPickItem {

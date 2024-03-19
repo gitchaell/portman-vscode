@@ -1,14 +1,13 @@
 import * as vscode from 'vscode';
-
 import { ProcessRepository } from './domain/ProcessRepository';
 import { NotImplementedProcessRepository } from './infrastructure/NotImplementedProcessRepository';
 import { LinuxProcessRepository } from './infrastructure/linux/LinuxProcessRepository';
 import { WindowsProcessRepository } from './infrastructure/windows/WindowsProcessRepository';
 import { ProcessTreeDataProvider } from './presentation/ProcessTreeDataProvider';
 import { ProcessTreeView } from './presentation/views/ProcessTreeView';
-import { KillProcessCommand } from './presentation/commands/KillProcessCommand';
 import { RefreshProcessesCommand } from './presentation/commands/RefreshProcessesCommand';
 import { ShowProcessInfoCommand } from './presentation/commands/ShowProcessInfoCommand';
+import { KillProcessCommand } from './presentation/commands/KillProcessCommand';
 
 export function activate(context: vscode.ExtensionContext) {
 	const repository: ProcessRepository = {
