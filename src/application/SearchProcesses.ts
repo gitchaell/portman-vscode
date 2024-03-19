@@ -1,6 +1,6 @@
-import { Query } from '../shared/application/Query';
-import { Process } from '../domain/Process';
-import { ProcessRepository } from '../domain/ProcessRepository';
+import { Query } from '@/shared/application/Query';
+import { Process } from '@/domain/Process';
+import { ProcessRepository } from '@/domain/ProcessRepository';
 
 export class SearchProcesses implements Query<Process[]> {
 	constructor(private repository: ProcessRepository) {}

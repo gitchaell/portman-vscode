@@ -1,4 +1,4 @@
-import { AggregateRoot } from '../shared/domain/AggregateRoot';
+import { AggregateRoot } from '@/shared/domain/AggregateRoot';
 import { ProcessId } from './ProcessId';
 import { ProcessProgram } from './ProcessProgram';
 import { ProcessStatus } from './ProcessStatus';

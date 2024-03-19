@@ -1,4 +1,4 @@
-import { AggregateRoot } from '../shared/domain/AggregateRoot';
+import { AggregateRoot } from '@/shared/domain/AggregateRoot';
 import { AddressHost } from './AddressHost';
 import { AddressPort } from './AddressPort';
 

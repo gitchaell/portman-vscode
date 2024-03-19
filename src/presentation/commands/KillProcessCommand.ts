@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { Command } from './Command';
 import { ProcessTreeItem } from '../ProcessTreeItem';
-import { Process } from '../../domain/Process';
+import { Process } from '@/domain/Process';
 import { KILL_COMMAND } from '../Constants';
 
 export class KillProcessCommand extends Command {

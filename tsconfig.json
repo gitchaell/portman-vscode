@@ -8,6 +8,7 @@
 		"strict": true,
 		"outDir": "dist",
 		"noUnusedParameters": true,
+		"noUnusedLocals": true,
 		"paths": {
 			"@/*": ["./src/*"]
 		}

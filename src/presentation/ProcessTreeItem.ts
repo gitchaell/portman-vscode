@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from 'vscode';
 
-import { Process } from '../domain/Process';
+import { Process } from '@/domain/Process';
 
 export class ProcessTreeItem extends TreeItem {
 	constructor(public readonly process: Process) {

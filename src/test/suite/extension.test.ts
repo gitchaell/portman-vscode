@@ -4,8 +4,8 @@ import { createServer } from 'node:http';
 
 import { ProcessRepository } from '@/domain/ProcessRepository';
 import { NotImplementedProcessRepository } from '@/infrastructure/NotImplementedProcessRepository';
-import { LinuxProcessRepository } from '@/infrastructure/LinuxProcessRepository';
-import { WindowsProcessRepository } from '@/infrastructure/WindowsProcessRepository';
+import { LinuxProcessRepository } from '@/infrastructure/linux/LinuxProcessRepository';
+import { WindowsProcessRepository } from '@/infrastructure/windows/WindowsProcessRepository';
 
 suite('Portman Test Suite', () => {
 	let processRepository: ProcessRepository;

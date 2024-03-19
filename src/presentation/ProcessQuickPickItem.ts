@@ -5,7 +5,7 @@ import {
 	ThemeIcon,
 } from 'vscode';
 
-import { Process } from '../domain/Process';
+import { Process } from '@/domain/Process';
 
 export class ProcessQuickPickItem implements QuickPickItem {
 	readonly label: string;

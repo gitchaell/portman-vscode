@@ -1,11 +1,13 @@
 import { TreeDataProvider, EventEmitter, TreeItem } from 'vscode';
 
-import { ProcessRepository } from '../domain/ProcessRepository';
-import { Process } from '../domain/Process';
+import { ProcessRepository } from '@/domain/ProcessRepository';
+import { Process } from '@/domain/Process';
 import { ProcessTreeItem } from './ProcessTreeItem';
 import { ProcessQuickPickItem } from './ProcessQuickPickItem';
 
-export class ProcessTreeDataProvider implements TreeDataProvider<ProcessTreeItem> {
+export class ProcessTreeDataProvider
+	implements TreeDataProvider<ProcessTreeItem>
+{
 	private _onDidChangeTreeData = new EventEmitter<
 		ProcessTreeItem | undefined | void
 	>();
