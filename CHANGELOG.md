@@ -2,7 +2,7 @@
 
 All notable changes to the "Portman" extension will be documented in this file.
 
-## 0.6.0 - 19-MAR-2024
+## 0.6.0 - 22-MAR-2024
 
 - Before executing the commands in a Linux environment, check if it is necessary to execute it as the root user.
 - The extension icon and logo were updated

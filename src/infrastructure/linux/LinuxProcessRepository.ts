@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 
@@ -8,20 +9,24 @@ import { CommandExecutionError } from '@/shared/domain/exceptions/CommandExecuti
 
 const execute = promisify(exec);
 const command = {
-	isRoot: () => `sudo -h`,
-	getAll: (asRoot = false) =>
-		`${
-			asRoot ? 'sudo ' : ''
-		}netstat --numeric --listening --program --tcp --udp | grep LISTEN | awk -v OFS='(|)' '{print $1, $2, $3, $4, $5, $6, $7}'`,
-	kill: (pid: string, asRoot = false) => `${asRoot ? 'sudo ' : ''}kill ${pid}`,
+	getAll: (asRootUser = false) => {
+		const cmd = `netstat --numeric --listening --program --tcp --udp | grep LISTEN | awk -v OFS='(|)' '{print $1, $2, $3, $4, $5, $6, $7}'`;
+		return `${asRootUser ? 'sudo ' : ''}${cmd}`;
+	},
+	kill: (pid: string, asRootUser = false) => {
+		const cmd = `kill ${pid}`;
+		return `${asRootUser ? 'sudo ' : ''}${cmd}`;
+	},
 };
 
 export class LinuxProcessRepository implements ProcessRepository {
 	async search(): Promise<Process[]> {
-		const result = execute(command.isRoot()).then(async ({ stdout }) => {
-			const asRoot = !!stdout;
+		const asRootUser = vscode.workspace
+			.getConfiguration('portman.linux')
+			.get<boolean>('asRootUser');
 
-			return execute(command.getAll(asRoot)).then(({ stdout, stderr }) => {
+		const result = execute(command.getAll(asRootUser)).then(
+			({ stdout, stderr }) => {
 				if (stderr) {
 					throw new CommandExecutionError(
 						`The command executed has failed. ${stderr}`
@@ -32,22 +37,23 @@ export class LinuxProcessRepository implements ProcessRepository {
 				const ports = transformer.transform(stdout);
 
 				return ports;
-			});
-		});
+			}
+		);
 
 		return result;
 	}
 
 	async kill(process: Process): Promise<void> {
-		execute(command.isRoot()).then(({ stdout }) => {
-			const asRoot = !!stdout;
-			execute(command.kill(process.id.value, asRoot)).then(({ stderr }) => {
-				if (stderr) {
-					throw new CommandExecutionError(
-						`The command executed has failed. ${stderr}`
-					);
-				}
-			});
+		const asRootUser = vscode.workspace
+			.getConfiguration('portman.linux')
+			.get<boolean>('asRootUser');
+
+		execute(command.kill(process.id.value, asRootUser)).then(({ stderr }) => {
+			if (stderr) {
+				throw new CommandExecutionError(
+					`The command executed has failed. ${stderr}`
+				);
+			}
 		});
 	}
 }
