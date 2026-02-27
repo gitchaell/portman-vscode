@@ -14,20 +14,18 @@ const command = {
 
 export class WindowsProcessRepository implements ProcessRepository {
 	async search(): Promise<Process[]> {
-		execute(command.getAll()).then(({ stdout, stderr }) => {
-			if (stderr) {
-				throw new CommandExecutionError(
-					`The command executed has failed. ${stderr}`
-				);
-			}
+		const { stdout, stderr } = await execute(command.getAll());
 
-			const transformer = new WindowsProcessTransformer();
-			const ports = transformer.transform(stdout);
+		if (stderr) {
+			throw new CommandExecutionError(
+				`The command executed has failed. ${stderr}`
+			);
+		}
 
-			return ports;
-		});
+		const transformer = new WindowsProcessTransformer();
+		const ports = transformer.transform(stdout);
 
-		return [];
+		return ports;
 	}
 
 	async kill(process: Process): Promise<void> {

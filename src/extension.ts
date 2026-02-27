@@ -3,6 +3,7 @@ import { ProcessRepository } from './domain/ProcessRepository';
 import { NotImplementedProcessRepository } from './infrastructure/NotImplementedProcessRepository';
 import { LinuxProcessRepository } from './infrastructure/linux/LinuxProcessRepository';
 import { WindowsProcessRepository } from './infrastructure/windows/WindowsProcessRepository';
+import { MacProcessRepository } from './infrastructure/macos/MacProcessRepository';
 import { ProcessTreeDataProvider } from './presentation/ProcessTreeDataProvider';
 import { ProcessTreeView } from './presentation/views/ProcessTreeView';
 import { RefreshProcessesCommand } from './presentation/commands/RefreshProcessesCommand';
@@ -14,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 		aix: new NotImplementedProcessRepository(),
 		android: new LinuxProcessRepository(),
 		cygwin: new LinuxProcessRepository(),
-		darwin: new LinuxProcessRepository(),
+		darwin: new MacProcessRepository(),
 		freebsd: new LinuxProcessRepository(),
 		haiku: new LinuxProcessRepository(),
 		linux: new LinuxProcessRepository(),
