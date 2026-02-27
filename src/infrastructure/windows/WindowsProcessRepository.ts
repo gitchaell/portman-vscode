@@ -5,6 +5,7 @@ import { Process } from '@/domain/Process';
 import { ProcessRepository } from '@/domain/ProcessRepository';
 import { CommandExecutionError } from '@/shared/domain/exceptions/CommandExecutionError';
 import { WindowsProcessTransformer } from './WindowsProcessTransformer';
+import { SystemChecker } from '@/shared/infrastructure/SystemChecker';
 
 const execute = promisify(exec);
 const command = {
@@ -14,6 +15,13 @@ const command = {
 
 export class WindowsProcessRepository implements ProcessRepository {
 	async search(): Promise<Process[]> {
+		const hasNetstat = await SystemChecker.checkCommand('netstat');
+		if (!hasNetstat) {
+			throw new CommandExecutionError(
+				`The command 'netstat' is not available on this system.`
+			);
+		}
+
 		const { stdout, stderr } = await execute(command.getAll());
 
 		if (stderr) {

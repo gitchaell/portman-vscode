@@ -5,6 +5,7 @@ import { Process } from '@/domain/Process';
 import { ProcessRepository } from '@/domain/ProcessRepository';
 import { CommandExecutionError } from '@/shared/domain/exceptions/CommandExecutionError';
 import { MacProcessTransformer } from './MacProcessTransformer';
+import { SystemChecker } from '@/shared/infrastructure/SystemChecker';
 
 const execute = promisify(exec);
 const command = {
@@ -14,6 +15,13 @@ const command = {
 
 export class MacProcessRepository implements ProcessRepository {
     async search(): Promise<Process[]> {
+        const hasLsof = await SystemChecker.checkCommand('lsof');
+        if (!hasLsof) {
+            throw new CommandExecutionError(
+                `The command 'lsof' is not available on this system.`
+            );
+        }
+
         try {
             const { stdout } = await execute(command.getAll());
             const transformer = new MacProcessTransformer();
