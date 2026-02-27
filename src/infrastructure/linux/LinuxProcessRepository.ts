@@ -5,12 +5,19 @@ import { promisify } from 'node:util';
 import { Process } from '@/domain/Process';
 import { ProcessRepository } from '@/domain/ProcessRepository';
 import { LinuxProcessTransformer } from './LinuxProcessTransformer';
+import { LinuxSSProcessTransformer } from './LinuxSSProcessTransformer';
 import { CommandExecutionError } from '@/shared/domain/exceptions/CommandExecutionError';
+import { SystemChecker } from '@/shared/infrastructure/SystemChecker';
 
 const execute = promisify(exec);
 const command = {
-	getAll: (asRootUser = false) => {
+	getAllNetstat: (asRootUser = false) => {
 		const cmd = `netstat --numeric --listening --program --tcp --udp | grep LISTEN | awk -v OFS='(|)' '{print $1, $2, $3, $4, $5, $6, $7}'`;
+		return `${asRootUser ? 'sudo ' : ''}${cmd}`;
+	},
+	getAllSS: (asRootUser = false) => {
+		// -l: listening, -p: processes, -t: tcp, -u: udp, -n: numeric
+		const cmd = `ss -lptn`;
 		return `${asRootUser ? 'sudo ' : ''}${cmd}`;
 	},
 	kill: (pid: string, asRootUser = false) => {
@@ -25,22 +32,39 @@ export class LinuxProcessRepository implements ProcessRepository {
 			.getConfiguration('portman.linux')
 			.get<boolean>('asRootUser');
 
-		const result = execute(command.getAll(asRootUser)).then(
-			({ stdout, stderr }) => {
-				if (stderr) {
-					throw new CommandExecutionError(
-						`The command executed has failed. ${stderr}`
-					);
+		// Check for netstat first
+		const hasNetstat = await SystemChecker.checkCommand('netstat');
+
+		if (hasNetstat) {
+			try {
+				const { stdout } = await execute(command.getAllNetstat(asRootUser));
+
+				if (stdout) {
+					const transformer = new LinuxProcessTransformer();
+					return transformer.transform(stdout);
 				}
-
-				const transformer = new LinuxProcessTransformer();
-				const ports = transformer.transform(stdout);
-
-				return ports;
+			} catch (error) {
+				// Fallback to ss
 			}
-		);
+		}
 
-		return result;
+		// Check for ss
+		const hasSS = await SystemChecker.checkCommand('ss');
+		if (hasSS) {
+			try {
+				const { stdout } = await execute(command.getAllSS(asRootUser));
+				const transformer = new LinuxSSProcessTransformer();
+				return transformer.transform(stdout);
+			} catch (error: any) {
+				throw new CommandExecutionError(
+					`The command 'ss' failed. Error: ${error.message}. Please check if you have permissions.`
+				);
+			}
+		}
+
+		throw new CommandExecutionError(
+			`Neither 'netstat' nor 'ss' commands are available. Please install 'net-tools' (for netstat) or 'iproute2' (for ss) package.`
+		);
 	}
 
 	async kill(process: Process): Promise<void> {
@@ -48,12 +72,12 @@ export class LinuxProcessRepository implements ProcessRepository {
 			.getConfiguration('portman.linux')
 			.get<boolean>('asRootUser');
 
-		execute(command.kill(process.id.value, asRootUser)).then(({ stderr }) => {
-			if (stderr) {
-				throw new CommandExecutionError(
-					`The command executed has failed. ${stderr}`
-				);
-			}
-		});
+		try {
+			await execute(command.kill(process.id.value, asRootUser));
+		} catch (error: any) {
+			throw new CommandExecutionError(
+				`Failed to kill process ${process.id.value}. Error: ${error.message}.`
+			);
+		}
 	}
 }

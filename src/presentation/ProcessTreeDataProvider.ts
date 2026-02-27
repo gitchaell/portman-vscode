@@ -1,4 +1,4 @@
-import { TreeDataProvider, EventEmitter, TreeItem } from 'vscode';
+import { TreeDataProvider, EventEmitter, TreeItem, window } from 'vscode';
 
 import { ProcessTreeItem } from './ProcessTreeItem';
 import { ProcessRepository } from '@/domain/ProcessRepository';
@@ -21,7 +21,11 @@ export class ProcessTreeDataProvider
 	}
 
 	async kill(port: Process): Promise<void> {
-		await this.processRepository.kill(port);
+		try {
+			await this.processRepository.kill(port);
+		} catch (error: any) {
+			window.showErrorMessage(`Failed to kill process: ${error.message}. Please check permissions or try running VS Code as Administrator/root.`);
+		}
 	}
 
 	getTreeItem(node: ProcessTreeItem): TreeItem {
@@ -29,16 +33,26 @@ export class ProcessTreeDataProvider
 	}
 
 	async getChildren(): Promise<ProcessTreeItem[]> {
-		const processes = await this.processRepository.search();
-		const nodes = processes.map((process) => new ProcessTreeItem(process));
+		try {
+			const processes = await this.processRepository.search();
+			const nodes = processes.map((process) => new ProcessTreeItem(process));
 
-		return nodes;
+			return nodes;
+		} catch (error: any) {
+			window.showErrorMessage(`Failed to list processes: ${error.message}`);
+			return [];
+		}
 	}
 
 	async getQuickItems(): Promise<ProcessQuickPickItem[]> {
-		const processes = await this.processRepository.search();
-		const items = processes.map((process) => new ProcessQuickPickItem(process));
+		try {
+			const processes = await this.processRepository.search();
+			const items = processes.map((process) => new ProcessQuickPickItem(process));
 
-		return items;
+			return items;
+		} catch (error: any) {
+			window.showErrorMessage(`Failed to list processes: ${error.message}`);
+			return [];
+		}
 	}
 }
