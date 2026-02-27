@@ -5,41 +5,57 @@ import { Process } from '@/domain/Process';
 import { ProcessRepository } from '@/domain/ProcessRepository';
 import { CommandExecutionError } from '@/shared/domain/exceptions/CommandExecutionError';
 import { WindowsProcessTransformer } from './WindowsProcessTransformer';
+import { WindowsPowerShellProcessTransformer } from './WindowsPowerShellProcessTransformer';
 import { SystemChecker } from '@/shared/infrastructure/SystemChecker';
 
 const execute = promisify(exec);
 const command = {
-	getAll: () => `netstat -a -b -n -o | findstr LISTENING`,
+	getAllNetstat: () => `netstat -a -b -n -o | findstr LISTENING`,
+	getAllPowerShell: () => `powershell -Command "Get-NetTCPConnection -State Listen | Select-Object -Property LocalAddress,LocalPort,OwningProcess"`,
 	kill: (pid: string) => `taskkill /PID ${pid}`,
 };
 
 export class WindowsProcessRepository implements ProcessRepository {
 	async search(): Promise<Process[]> {
 		const hasNetstat = await SystemChecker.checkCommand('netstat');
-		if (!hasNetstat) {
-			throw new CommandExecutionError(
-				`The command 'netstat' is not available. Please verify your Windows installation.`,
-			);
+		if (hasNetstat) {
+			try {
+				const { stdout, stderr } = await execute(command.getAllNetstat());
+
+				if (!stderr && stdout) {
+					const transformer = new WindowsProcessTransformer();
+					return transformer.transform(stdout);
+				}
+			} catch (error: any) {
+				// Fallback to powershell
+			}
 		}
 
-		try {
-			const { stdout, stderr } = await execute(command.getAll());
+		const hasPowerShell = await SystemChecker.checkCommand('powershell');
+		if (hasPowerShell) {
+			try {
+				const { stdout, stderr } = await execute(command.getAllPowerShell());
 
-			if (stderr) {
+				if (stderr) {
+					throw new CommandExecutionError(
+						`The command executed has failed. ${stderr}`,
+					);
+				}
+
+				if (stdout) {
+					const transformer = new WindowsPowerShellProcessTransformer();
+					return transformer.transform(stdout);
+				}
+			} catch (error: any) {
 				throw new CommandExecutionError(
-					`The command executed has failed. ${stderr}`,
+					`Failed to search processes via PowerShell: ${error.message}.`,
 				);
 			}
-
-			const transformer = new WindowsProcessTransformer();
-			const ports = transformer.transform(stdout);
-
-			return ports;
-		} catch (error: any) {
-			throw new CommandExecutionError(
-				`Failed to search processes: ${error.message}. Ensure you have necessary permissions.`,
-			);
 		}
+
+		throw new CommandExecutionError(
+			`Neither 'netstat' nor 'powershell' commands are available. Please verify your Windows installation.`,
+		);
 	}
 
 	async kill(process: Process): Promise<void> {
