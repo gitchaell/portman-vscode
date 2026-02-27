@@ -2,7 +2,7 @@
 	"name": "portman",
 	"displayName": "Portman",
 	"description": "VS Code Plugin to manage processes/ports running on your device.",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"author": "Michaell Alavedra",
 	"publisher": "MichaellAlavedraMunayco",
 	"license": "MIT",
@@ -106,7 +106,7 @@
 			"properties": {
 				"portman.linux.asRootUser": {
 					"type": "boolean",
-					"default": false,
+					"default": true,
 					"description": "In order to execute commands as root user, you must set this option to true. You can change this behavior to false if you want to run as a regular user."
 				}
 			}
