@@ -9,6 +9,7 @@ async function main() {
 		const extensionTestsPath = path.resolve(__dirname, './suite/index');
 
 		await runTests({
+			version: '1.107.0',
 			extensionDevelopmentPath,
 			extensionTestsPath,
 		});
