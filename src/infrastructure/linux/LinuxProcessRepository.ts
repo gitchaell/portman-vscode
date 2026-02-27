@@ -27,6 +27,26 @@ const command = {
 };
 
 export class LinuxProcessRepository implements ProcessRepository {
+	private async executeSafely(
+		commandGenerator: (asRootUser: boolean) => string,
+		asRootUser: boolean | undefined,
+	): Promise<string> {
+		try {
+			const { stdout } = await execute(commandGenerator(!!asRootUser));
+			return stdout;
+		} catch (error: any) {
+			if (asRootUser) {
+				try {
+					const { stdout } = await execute(commandGenerator(false));
+					return stdout;
+				} catch (retryError) {
+					// Fallback failed, propagate the original error which might be more descriptive about permissions
+				}
+			}
+			throw error;
+		}
+	}
+
 	async search(): Promise<Process[]> {
 		const asRootUser = vscode.workspace
 			.getConfiguration('portman.linux')
@@ -37,7 +57,7 @@ export class LinuxProcessRepository implements ProcessRepository {
 
 		if (hasNetstat) {
 			try {
-				const { stdout } = await execute(command.getAllNetstat(asRootUser));
+				const stdout = await this.executeSafely(command.getAllNetstat, asRootUser);
 
 				if (stdout) {
 					const transformer = new LinuxProcessTransformer();
@@ -52,7 +72,7 @@ export class LinuxProcessRepository implements ProcessRepository {
 		const hasSS = await SystemChecker.checkCommand('ss');
 		if (hasSS) {
 			try {
-				const { stdout } = await execute(command.getAllSS(asRootUser));
+				const stdout = await this.executeSafely(command.getAllSS, asRootUser);
 				const transformer = new LinuxSSProcessTransformer();
 				return transformer.transform(stdout);
 			} catch (error: any) {
@@ -73,7 +93,7 @@ export class LinuxProcessRepository implements ProcessRepository {
 			.get<boolean>('asRootUser');
 
 		try {
-			await execute(command.kill(process.id.value, asRootUser));
+			await this.executeSafely((asRoot) => command.kill(process.id.value, asRoot), asRootUser);
 		} catch (error: any) {
 			throw new CommandExecutionError(
 				`Failed to kill process ${process.id.value}. Error: ${error.message}.`,

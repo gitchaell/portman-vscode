@@ -5,36 +5,52 @@ import { Process } from '@/domain/Process';
 import { ProcessRepository } from '@/domain/ProcessRepository';
 import { CommandExecutionError } from '@/shared/domain/exceptions/CommandExecutionError';
 import { MacProcessTransformer } from './MacProcessTransformer';
+import { MacNetstatProcessTransformer } from './MacNetstatProcessTransformer';
 import { SystemChecker } from '@/shared/infrastructure/SystemChecker';
 
 const execute = promisify(exec);
 const command = {
-	getAll: () => `lsof -i -P -n | grep LISTEN`,
+	getAllLsof: () => `lsof -i -P -n | grep LISTEN`,
+	getAllNetstat: () => `netstat -anv -p tcp | grep LISTEN`,
 	kill: (pid: string) => `kill ${pid}`,
 };
 
 export class MacProcessRepository implements ProcessRepository {
 	async search(): Promise<Process[]> {
 		const hasLsof = await SystemChecker.checkCommand('lsof');
-		if (!hasLsof) {
-			throw new CommandExecutionError(
-				`The command 'lsof' is not available. Please install it to use this extension.`,
-			);
+		if (hasLsof) {
+			try {
+				const { stdout } = await execute(command.getAllLsof());
+				const transformer = new MacProcessTransformer();
+				return transformer.transform(stdout);
+			} catch (error: any) {
+				// grep returns exit code 1 if no matches found
+				if (error.code === 1) {
+					return [];
+				}
+				// If lsof fails due to permissions, fallback to netstat
+			}
 		}
 
-		try {
-			const { stdout } = await execute(command.getAll());
-			const transformer = new MacProcessTransformer();
-			return transformer.transform(stdout);
-		} catch (error: any) {
-			// grep returns exit code 1 if no matches found
-			if (error.code === 1) {
-				return [];
+		const hasNetstat = await SystemChecker.checkCommand('netstat');
+		if (hasNetstat) {
+			try {
+				const { stdout } = await execute(command.getAllNetstat());
+				const transformer = new MacNetstatProcessTransformer();
+				return transformer.transform(stdout);
+			} catch (error: any) {
+				if (error.code === 1) {
+					return [];
+				}
+				throw new CommandExecutionError(
+					`Failed to execute 'netstat': ${error.message}.`,
+				);
 			}
-			throw new CommandExecutionError(
-				`Failed to execute 'lsof': ${error.message}. Please check permissions.`,
-			);
 		}
+
+		throw new CommandExecutionError(
+			`Neither 'lsof' nor 'netstat' commands are available. Please install them to use this extension.`,
+		);
 	}
 
 	async kill(process: Process): Promise<void> {
