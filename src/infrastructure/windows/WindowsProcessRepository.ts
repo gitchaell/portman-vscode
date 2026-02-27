@@ -18,7 +18,7 @@ export class WindowsProcessRepository implements ProcessRepository {
 		const hasNetstat = await SystemChecker.checkCommand('netstat');
 		if (!hasNetstat) {
 			throw new CommandExecutionError(
-				`The command 'netstat' is not available. Please verify your Windows installation.`
+				`The command 'netstat' is not available. Please verify your Windows installation.`,
 			);
 		}
 
@@ -27,7 +27,7 @@ export class WindowsProcessRepository implements ProcessRepository {
 
 			if (stderr) {
 				throw new CommandExecutionError(
-					`The command executed has failed. ${stderr}`
+					`The command executed has failed. ${stderr}`,
 				);
 			}
 
@@ -37,7 +37,7 @@ export class WindowsProcessRepository implements ProcessRepository {
 			return ports;
 		} catch (error: any) {
 			throw new CommandExecutionError(
-				`Failed to search processes: ${error.message}. Ensure you have necessary permissions.`
+				`Failed to search processes: ${error.message}. Ensure you have necessary permissions.`,
 			);
 		}
 	}
@@ -47,7 +47,7 @@ export class WindowsProcessRepository implements ProcessRepository {
 			await execute(command.kill(process.id.value));
 		} catch (error: any) {
 			throw new CommandExecutionError(
-				`Failed to kill process ${process.id.value}: ${error.message}. You might need Admin privileges.`
+				`Failed to kill process ${process.id.value}: ${error.message}. You might need Admin privileges.`,
 			);
 		}
 	}

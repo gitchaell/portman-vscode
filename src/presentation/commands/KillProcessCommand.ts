@@ -17,7 +17,7 @@ export class KillProcessCommand extends VSCommand {
 						{
 							placeHolder: 'Select process to kill ...',
 							canPickMany: false,
-						}
+						},
 					);
 
 					process = nodeSelected?.process || null;
@@ -33,7 +33,7 @@ export class KillProcessCommand extends VSCommand {
 				const result = await vscode.window.showWarningMessage(
 					`Are you sure you want to stop process with ID ${process.id}?`,
 					{ modal: true },
-					'Kill Process'
+					'Kill Process',
 				);
 
 				if (result === 'Kill Process') {
@@ -42,10 +42,10 @@ export class KillProcessCommand extends VSCommand {
 					this.treeDataProvider.refresh();
 
 					vscode.window.showInformationMessage(
-						`The process with ID ${process.id} has been stopped`
+						`The process with ID ${process.id} has been stopped`,
 					);
 				}
-			}
+			},
 		);
 
 		this.context.subscriptions.push(command);

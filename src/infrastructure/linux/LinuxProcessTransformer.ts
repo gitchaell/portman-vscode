@@ -50,7 +50,7 @@ export class LinuxProcessTransformer implements ProcessTransformer {
 					remoteHost,
 					remotePort,
 					status,
-				})
+				}),
 			);
 		}
 

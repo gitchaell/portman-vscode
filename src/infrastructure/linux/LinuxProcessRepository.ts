@@ -57,13 +57,13 @@ export class LinuxProcessRepository implements ProcessRepository {
 				return transformer.transform(stdout);
 			} catch (error: any) {
 				throw new CommandExecutionError(
-					`The command 'ss' failed. Error: ${error.message}. Please check if you have permissions.`
+					`The command 'ss' failed. Error: ${error.message}. Please check if you have permissions.`,
 				);
 			}
 		}
 
 		throw new CommandExecutionError(
-			`Neither 'netstat' nor 'ss' commands are available. Please install 'net-tools' (for netstat) or 'iproute2' (for ss) package.`
+			`Neither 'netstat' nor 'ss' commands are available. Please install 'net-tools' (for netstat) or 'iproute2' (for ss) package.`,
 		);
 	}
 
@@ -76,7 +76,7 @@ export class LinuxProcessRepository implements ProcessRepository {
 			await execute(command.kill(process.id.value, asRootUser));
 		} catch (error: any) {
 			throw new CommandExecutionError(
-				`Failed to kill process ${process.id.value}. Error: ${error.message}.`
+				`Failed to kill process ${process.id.value}. Error: ${error.message}.`,
 			);
 		}
 	}

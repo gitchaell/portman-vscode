@@ -7,9 +7,10 @@ export class SystemChecker {
 	static async checkCommand(command: string): Promise<boolean> {
 		try {
 			// On Windows, 'where' checks for executable. On *nix, 'command -v'.
-			const checkCmd = process.platform === 'win32'
-				? `where ${command}`
-				: `command -v ${command}`;
+			const checkCmd =
+				process.platform === 'win32'
+					? `where ${command}`
+					: `command -v ${command}`;
 
 			await execute(checkCmd);
 			return true;

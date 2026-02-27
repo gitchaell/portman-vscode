@@ -5,9 +5,7 @@ import { ProcessRepository } from '@/domain/ProcessRepository';
 import { Process } from '@/domain/Process';
 import { ProcessQuickPickItem } from './ProcessQuickPickItem';
 
-export class ProcessTreeDataProvider
-	implements TreeDataProvider<ProcessTreeItem>
-{
+export class ProcessTreeDataProvider implements TreeDataProvider<ProcessTreeItem> {
 	private _onDidChangeTreeData = new EventEmitter<
 		ProcessTreeItem | undefined | void
 	>();
@@ -24,7 +22,9 @@ export class ProcessTreeDataProvider
 		try {
 			await this.processRepository.kill(port);
 		} catch (error: any) {
-			window.showErrorMessage(`Failed to kill process: ${error.message}. Please check permissions or try running VS Code as Administrator/root.`);
+			window.showErrorMessage(
+				`Failed to kill process: ${error.message}. Please check permissions or try running VS Code as Administrator/root.`,
+			);
 		}
 	}
 
@@ -47,7 +47,9 @@ export class ProcessTreeDataProvider
 	async getQuickItems(): Promise<ProcessQuickPickItem[]> {
 		try {
 			const processes = await this.processRepository.search();
-			const items = processes.map((process) => new ProcessQuickPickItem(process));
+			const items = processes.map(
+				(process) => new ProcessQuickPickItem(process),
+			);
 
 			return items;
 		} catch (error: any) {
