@@ -47,7 +47,7 @@ export class WindowsProcessTransformer implements ProcessTransformer {
 					remoteHost,
 					remotePort,
 					status,
-				})
+				}),
 			);
 		}
 

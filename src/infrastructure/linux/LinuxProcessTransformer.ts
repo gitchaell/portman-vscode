@@ -10,7 +10,7 @@ export class LinuxProcessTransformer implements ProcessTransformer {
 	};
 
 	transform(input: string): Process[] {
-		const lines = input.split(this.regExp.newLine).splice(2);
+		const lines = input.split(this.regExp.newLine);
 
 		const processes: Process[] = [];
 
@@ -50,7 +50,7 @@ export class LinuxProcessTransformer implements ProcessTransformer {
 					remoteHost,
 					remotePort,
 					status,
-				})
+				}),
 			);
 		}
 

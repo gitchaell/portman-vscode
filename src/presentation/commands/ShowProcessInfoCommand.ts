@@ -9,7 +9,7 @@ export class ShowProcessInfoCommand extends VSCommand {
 			SHOW_INFO_COMMAND,
 			(item: ProcessTreeItem) => {
 				vscode.window.showInformationMessage(item.process.tooltip);
-			}
+			},
 		);
 
 		this.context.subscriptions.push(command);

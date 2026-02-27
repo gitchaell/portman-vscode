@@ -24,13 +24,13 @@ export class Process extends AggregateRoot {
 			new Protocol(process.protocol),
 			new Address(
 				new AddressHost(process.localHost),
-				new AddressPort(process.localPort)
+				new AddressPort(process.localPort),
 			),
 			new Address(
 				new AddressHost(process.remoteHost),
-				new AddressPort(process.remotePort)
+				new AddressPort(process.remotePort),
 			),
-			new ProcessStatus(process.status)
+			new ProcessStatus(process.status),
 		);
 	}
 
@@ -40,7 +40,7 @@ export class Process extends AggregateRoot {
 		public readonly protocol: Protocol,
 		public readonly local: Address,
 		public readonly remote: Address,
-		public readonly status: ProcessStatus
+		public readonly status: ProcessStatus,
 	) {
 		super();
 	}

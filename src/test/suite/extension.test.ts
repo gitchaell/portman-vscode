@@ -34,7 +34,7 @@ suite('Portman Test Suite', () => {
 				assert.ok(Array.isArray(processes), 'Processes should be an array');
 				assert.ok(
 					processes.length > 0,
-					'There should be at least one process listed'
+					'There should be at least one process listed',
 				);
 			} catch (error) {
 				assert.fail(`Error thrown: ${error}`);
@@ -53,7 +53,7 @@ suite('Portman Test Suite', () => {
 						const processesBeforeKill = await processRepository.search();
 
 						const runningProcess = processesBeforeKill.find(
-							({ local }) => local.port.value === port
+							({ local }) => local.port.value === port,
 						);
 
 						if (!runningProcess) {
@@ -65,13 +65,13 @@ suite('Portman Test Suite', () => {
 						const processesAfterKill = await processRepository.search();
 
 						const killedProcess = processesAfterKill.some(
-							({ local }) => local.port.value === port
+							({ local }) => local.port.value === port,
 						);
 
 						assert.strictEqual(
 							killedProcess,
 							false,
-							'Process should be killed'
+							'Process should be killed',
 						);
 
 						server.close();

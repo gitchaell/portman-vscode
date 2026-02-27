@@ -18,7 +18,7 @@ export class AddressPort extends StringValueObject {
 
 		if (+value < 1 && +value > 65535) {
 			throw new InvalidArgumentError(
-				`Port <${value}> must be within range [1-65535]`
+				`Port <${value}> must be within range [1-65535]`,
 			);
 		}
 	}
