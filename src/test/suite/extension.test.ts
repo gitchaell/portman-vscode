@@ -28,17 +28,28 @@ suite('Portman Test Suite', () => {
 
 	suite('Search Processes', () => {
 		test('Should list active processes', async () => {
-			try {
-				const processes = await processRepository.search();
+			await new Promise<void>((resolve, reject) => {
+				const port = '3001';
+				const server = createServer();
 
-				assert.ok(Array.isArray(processes), 'Processes should be an array');
-				assert.ok(
-					processes.length > 0,
-					'There should be at least one process listed',
-				);
-			} catch (error) {
-				assert.fail(`Error thrown: ${error}`);
-			}
+				server.listen(port).on('listening', async () => {
+					try {
+						const processes = await processRepository.search();
+
+						assert.ok(Array.isArray(processes), 'Processes should be an array');
+						assert.ok(
+							processes.length > 0,
+							'There should be at least one process listed',
+						);
+						server.close();
+						resolve();
+					} catch (error) {
+						server.close();
+						reject(error);
+						assert.fail(`Error thrown: ${error}`);
+					}
+				});
+			});
 		});
 	});
 
