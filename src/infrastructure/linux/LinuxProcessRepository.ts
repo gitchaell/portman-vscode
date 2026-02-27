@@ -37,17 +37,14 @@ export class LinuxProcessRepository implements ProcessRepository {
 
 		if (hasNetstat) {
 			try {
-				const { stdout, stderr } = await execute(command.getAllNetstat(asRootUser));
+				const { stdout } = await execute(command.getAllNetstat(asRootUser));
 
-				// Some netstat versions output warnings to stderr but still work.
-				// We proceed if stdout has content.
 				if (stdout) {
 					const transformer = new LinuxProcessTransformer();
 					return transformer.transform(stdout);
 				}
 			} catch (error) {
-				// Fallback to ss if netstat fails
-				// console.warn('Netstat failed, trying ss...', error);
+				// Fallback to ss
 			}
 		}
 
@@ -60,13 +57,13 @@ export class LinuxProcessRepository implements ProcessRepository {
 				return transformer.transform(stdout);
 			} catch (error: any) {
 				throw new CommandExecutionError(
-					`The command 'ss' executed has failed. ${error.message}`
+					`The command 'ss' failed. Error: ${error.message}. Please check if you have permissions.`
 				);
 			}
 		}
 
 		throw new CommandExecutionError(
-			`Neither 'netstat' nor 'ss' commands are available on this system or failed to execute.`
+			`Neither 'netstat' nor 'ss' commands are available. Please install 'net-tools' (for netstat) or 'iproute2' (for ss) package.`
 		);
 	}
 
@@ -75,10 +72,11 @@ export class LinuxProcessRepository implements ProcessRepository {
 			.getConfiguration('portman.linux')
 			.get<boolean>('asRootUser');
 
-		const { stderr } = await execute(command.kill(process.id.value, asRootUser));
-		if (stderr) {
+		try {
+			await execute(command.kill(process.id.value, asRootUser));
+		} catch (error: any) {
 			throw new CommandExecutionError(
-				`The command executed has failed. ${stderr}`
+				`Failed to kill process ${process.id.value}. Error: ${error.message}.`
 			);
 		}
 	}

@@ -18,7 +18,7 @@ export class MacProcessRepository implements ProcessRepository {
         const hasLsof = await SystemChecker.checkCommand('lsof');
         if (!hasLsof) {
             throw new CommandExecutionError(
-                `The command 'lsof' is not available on this system.`
+                `The command 'lsof' is not available. Please install it to use this extension.`
             );
         }
 
@@ -32,12 +32,18 @@ export class MacProcessRepository implements ProcessRepository {
                 return [];
             }
             throw new CommandExecutionError(
-                `The command executed has failed. ${error.message}`
+                `Failed to execute 'lsof': ${error.message}. Please check permissions.`
             );
         }
     }
 
     async kill(process: Process): Promise<void> {
-        await execute(command.kill(process.id.value));
+        try {
+            await execute(command.kill(process.id.value));
+        } catch (error: any) {
+            throw new CommandExecutionError(
+                `Failed to kill process ${process.id.value}: ${error.message}. You might need root privileges.`
+            );
+        }
     }
 }

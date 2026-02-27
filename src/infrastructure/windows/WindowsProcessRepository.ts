@@ -18,25 +18,37 @@ export class WindowsProcessRepository implements ProcessRepository {
 		const hasNetstat = await SystemChecker.checkCommand('netstat');
 		if (!hasNetstat) {
 			throw new CommandExecutionError(
-				`The command 'netstat' is not available on this system.`
+				`The command 'netstat' is not available. Please verify your Windows installation.`
 			);
 		}
 
-		const { stdout, stderr } = await execute(command.getAll());
+		try {
+			const { stdout, stderr } = await execute(command.getAll());
 
-		if (stderr) {
+			if (stderr) {
+				throw new CommandExecutionError(
+					`The command executed has failed. ${stderr}`
+				);
+			}
+
+			const transformer = new WindowsProcessTransformer();
+			const ports = transformer.transform(stdout);
+
+			return ports;
+		} catch (error: any) {
 			throw new CommandExecutionError(
-				`The command executed has failed. ${stderr}`
+				`Failed to search processes: ${error.message}. Ensure you have necessary permissions.`
 			);
 		}
-
-		const transformer = new WindowsProcessTransformer();
-		const ports = transformer.transform(stdout);
-
-		return ports;
 	}
 
 	async kill(process: Process): Promise<void> {
-		return execute(command.kill(process.id.value)).then(console.log);
+		try {
+			await execute(command.kill(process.id.value));
+		} catch (error: any) {
+			throw new CommandExecutionError(
+				`Failed to kill process ${process.id.value}: ${error.message}. You might need Admin privileges.`
+			);
+		}
 	}
 }
