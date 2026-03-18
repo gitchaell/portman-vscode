@@ -3,34 +3,36 @@
 </p>
 
 <h1 align="center">
-  Análisis Arquitectónico de Portman: Gestión de Procesos de Red en VS Code
+  Portman: Gestión de Puertos y Procesos en VS Code
 </h1>
 
 Este documento expone la arquitectura, el diseño de dominio y los flujos de ejecución que fundamentan **Portman**, una extensión nativa para Visual Studio Code. Su propósito es actuar como registro técnico oficial del repositorio y como caso de estudio descriptivo de las decisiones de ingeniería detrás del proyecto.
 
-[📸 Captura: Vista principal de Portman mostrando la jerarquía de procesos activos en el panel lateral de VS Code]
+![cover](assets/cover.png)
 
 ---
 
 ## Contexto del Problema y Mecánica de Resolución
 
-Durante el desarrollo de software, un obstáculo operativo recurrente es la colisión de asignación de puertos de red (conocido en entornos Node.js como el error `EADDRINUSE`). Esto ocurre cuando un proceso previo, ya sea en ejecución intencionada o huérfano (zombie), mantiene abierto un *socket* de escucha en una interfaz de red y puerto específicos, impidiendo que una nueva instancia se enlace a dicho recurso.
+Durante el desarrollo de software, un obstáculo operativo recurrente es la colisión de asignación de puertos de red (conocido en entornos Node.js como el error `EADDRINUSE`). Esto ocurre cuando un proceso previo, ya sea en ejecución intencionada o huérfano (zombie), mantiene abierto un _socket_ de escucha en una interfaz de red y puerto específicos, impidiendo que una nueva instancia se enlace a dicho recurso.
 
 La resolución manual de este estado requiere que el desarrollador interactúe directamente con el sistema operativo a través de una interfaz de línea de comandos (CLI) para:
-1.  **Sondear:** Ejecutar utilidades de análisis de red (ej. `lsof`, `netstat`, `ss`).
-2.  **Filtrar:** Procesar la salida estándar (stdout) para aislar el proceso anclado al puerto conflictivo.
-3.  **Identificar:** Extraer el Identificador de Proceso (PID).
-4.  **Terminar:** Enviar una señal del sistema (como `SIGKILL`) al PID identificado.
+
+1. **Sondear:** Ejecutar utilidades de análisis de red (ej. `lsof`, `netstat`, `ss`).
+2. **Filtrar:** Procesar la salida estándar (stdout) para aislar el proceso anclado al puerto conflictivo.
+3. **Identificar:** Extraer el Identificador de Proceso (PID).
+4. **Terminar:** Enviar una señal del sistema (como `SIGKILL`) al PID identificado.
 
 ### La Solución Operativa de Portman
 
 Portman automatiza y abstrae este flujo de diagnóstico e intervención, integrándolo directamente en el entorno de desarrollo integrado (IDE).
 
 El flujo de trabajo funcional se resume en:
-1.  **Extracción de Estado del Sistema:** La extensión interactúa de manera transparente con las APIs y binarios nativos del sistema operativo anfitrión para recuperar el estado actual de las conexiones de red.
-2.  **Transformación y Mapeo:** La información cruda extraída del sistema operativo se normaliza en modelos de dominio estructurados.
-3.  **Presentación en Tiempo Real:** Los modelos normalizados se renderizan en una estructura de árbol interactiva dentro de la interfaz gráfica de VS Code.
-4.  **Ejecución de Acciones:** Mediante comandos integrados, la herramienta permite al usuario seleccionar un nodo del árbol y despachar la señal de terminación al proceso subyacente de forma unificada, independientemente del sistema operativo utilizado.
+
+1. **Extracción de Estado del Sistema:** La extensión interactúa de manera transparente con las APIs y binarios nativos del sistema operativo anfitrión para recuperar el estado actual de las conexiones de red.
+2. **Transformación y Mapeo:** La información cruda extraída del sistema operativo se normaliza en modelos de dominio estructurados.
+3. **Presentación en Tiempo Real:** Los modelos normalizados se renderizan en una estructura de árbol interactiva dentro de la interfaz gráfica de VS Code.
+4. **Ejecución de Acciones:** Mediante comandos integrados, la herramienta permite al usuario seleccionar un nodo del árbol y despachar la señal de terminación al proceso subyacente de forma unificada, independientemente del sistema operativo utilizado.
 
 ---
 
@@ -42,22 +44,22 @@ El código se divide conceptualmente en cuatro capas concéntricas, donde la dep
 
 ```mermaid
 graph TD
-    subgraph "Capa Externa (Infraestructura y Presentación)"
+    subgraph ext["Capa Externa (Infraestructura y Presentación)"]
         VS[VS Code Extension API]
         CLI[OS Binaries: netstat, lsof, ss]
     end
 
-    subgraph "Capa de Presentación (Presentation)"
+    subgraph pres["Capa de Presentación"]
         PTD[ProcessTreeDataProvider]
-        Cmds[Commands: KillProcessCommand]
+        Cmds[KillProcessCommand]
     end
 
-    subgraph "Capa de Aplicación (Application)"
+    subgraph app["Capa de Aplicación"]
         SP[UseCase: SearchProcesses]
         KP[UseCase: KillProcess]
     end
 
-    subgraph "Capa de Dominio (Domain)"
+    subgraph dom["Capa de Dominio"]
         Model[Aggregate Root: Process]
         RepoInt[Interface: ProcessRepository]
     end
@@ -68,16 +70,17 @@ graph TD
     Cmds --> KP
     SP --> RepoInt
     KP --> RepoInt
-    RepoInt <.. CLI : Implementation Details
+    CLI -.->|Implementación| RepoInt
 
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
-    classDef domain fill:#d4edda,stroke:#28a745,stroke-width:2px;
-    classDef app fill:#cce5ff,stroke:#007bff,stroke-width:2px;
-    classDef pres fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
+    classDef domain fill:#d4edda,stroke:#28a745,stroke-width:2px,color:#155724;
+    classDef app fill:#cce5ff,stroke:#007bff,stroke-width:2px,color:#004085;
+    classDef pres fill:#fff3cd,stroke:#ffc107,stroke-width:2px,color:#856404;
+    classDef external fill:#f8f9fa,stroke:#6c757d,stroke-width:1px,color:#495057;
 
     class Model,RepoInt domain;
     class SP,KP app;
     class PTD,Cmds pres;
+    class VS,CLI external;
 ```
 
 ### 1. El Núcleo de Dominio (Domain)
@@ -86,13 +89,13 @@ El modelo de dominio está aislado de cualquier dependencia externa, framework o
 
 #### El Agregado `Process`
 
-La entidad central es `Process`, que actúa como el *Aggregate Root*. Está compuesto por múltiples Objetos de Valor (*Value Objects*) que garantizan la integridad de los datos en el momento de su instanciación:
+La entidad central es `Process`, que actúa como el _Aggregate Root_. Está compuesto por múltiples Objetos de Valor (_Value Objects_) que garantizan la integridad de los datos en el momento de su instanciación:
 
-*   **`ProcessId`**: Identificador único (PID).
-*   **`ProcessProgram`**: Nombre del ejecutable o daemon.
-*   **`Protocol`**: Protocolo de transporte (TCP, UDP).
-*   **`Address`**: Composición de `AddressHost` (IP o hostname local/remoto) y `AddressPort` (puerto numérico).
-*   **`ProcessStatus`**: Estado actual de la conexión (ej. LISTEN, ESTABLISHED).
+- **`ProcessId`**: Identificador único (PID).
+- **`ProcessProgram`**: Nombre del ejecutable o daemon.
+- **`Protocol`**: Protocolo de transporte (TCP, UDP).
+- **`Address`**: Composición de `AddressHost` (IP o hostname local/remoto) y `AddressPort` (puerto numérico).
+- **`ProcessStatus`**: Estado actual de la conexión (ej. LISTEN, ESTABLISHED).
 
 ```mermaid
 classDiagram
@@ -124,13 +127,14 @@ classDiagram
     ProcessRepository --> Process : manages
 ```
 
-Además, el dominio define el contrato `ProcessRepository`, que establece las operaciones fundamentales de búsqueda y terminación que el sistema requiere, sin dictar *cómo* se implementan.
+Además, el dominio define el contrato `ProcessRepository`, que establece las operaciones fundamentales de búsqueda y terminación que el sistema requiere, sin dictar _cómo_ se implementan.
 
 ### 2. Capa de Aplicación (Application)
 
-La capa de aplicación orquesta las reglas de negocio utilizando los contratos del dominio. Está estructurada en torno a Casos de Uso específicos (*Use Cases*):
-*   **`SearchProcesses`**: Emite una consulta (Query) al repositorio para recuperar el arreglo de objetos `Process`.
-*   **`KillProcess`**: Emite un comando (Command) al repositorio para eliminar un objeto `Process` específico.
+La capa de aplicación orquesta las reglas de negocio utilizando los contratos del dominio. Está estructurada en torno a Casos de Uso específicos (_Use Cases_):
+
+- **`SearchProcesses`**: Emite una consulta (Query) al repositorio para recuperar el arreglo de objetos `Process`.
+- **`KillProcess`**: Emite un comando (Command) al repositorio para eliminar un objeto `Process` específico.
 
 Estos casos de uso carecen de estado y dependen de la inyección del repositorio concreto en tiempo de ejecución.
 
@@ -138,9 +142,9 @@ Estos casos de uso carecen de estado y dependen de la inyección del repositorio
 
 Aquí residen las implementaciones técnicas de la interfaz `ProcessRepository`. La inyección de dependencias se gestiona en el punto de entrada de la aplicación (`extension.ts`), evaluando la variable de entorno `process.platform` para instanciar el adaptador correcto.
 
-*   **`LinuxProcessRepository`**: Prioriza la extracción mediante `netstat`. Posee un mecanismo de control de fallos (*graceful fallback*) hacia el binario `ss` si el primero no está presente. Además, evalúa la configuración `portman.linux.asRootUser` para escalar privilegios mediante `pkexec` o `sudo` en caso de requerirse.
-*   **`MacProcessRepository`**: Interactúa de manera nativa con `lsof -i -P -n`.
-*   **`WindowsProcessRepository`**: Invoca implementaciones basadas en PowerShell (`Get-NetTCPConnection`) o comandos MS-DOS heredados (`netstat -a -b -n -o`).
+- **`LinuxProcessRepository`**: Prioriza la extracción mediante `netstat`. Posee un mecanismo de control de fallos (_graceful fallback_) hacia el binario `ss` si el primero no está presente. Además, evalúa la configuración `portman.linux.asRootUser` para escalar privilegios mediante `pkexec` o `sudo` en caso de requerirse.
+- **`MacProcessRepository`**: Interactúa de manera nativa con `lsof -i -P -n`.
+- **`WindowsProcessRepository`**: Invoca implementaciones basadas en PowerShell (`Get-NetTCPConnection`) o comandos MS-DOS heredados (`netstat -a -b -n -o`).
 
 Cada repositorio delega el análisis sintáctico de la salida estándar a clases transformadoras específicas (e.g., `MacNetstatProcessTransformer`), las cuales parsean las cadenas de texto crudas, validan la estructura y mapean los datos al objeto de dominio `Process`.
 
@@ -155,12 +159,11 @@ El componente principal es el **`ProcessTreeDataProvider`**, que implementa la i
 
 La pila de herramientas elegida para este proyecto refleja la necesidad de construir un artefacto empaquetado optimizado, fuertemente tipado y estrechamente vinculado a un entorno de ejecución Node.js (Electron).
 
-| Tecnología / Herramienta | Rol en la Arquitectura | Propósito Funcional |
-| :--- | :--- | :--- |
-| **TypeScript (v5.x)** | Lenguaje Principal | Provee análisis estático y tipado fuerte, crucial para modelar las entidades de la capa de Dominio y asegurar contratos entre capas. |
-| **VS Code Extension API** | Entorno de Ejecución | Provee la interfaz programática (`vscode.*`) para la renderización de la UI nativa, el registro de comandos y el acceso al panel lateral. |
-| **Webpack (v5.x)** | Empaquetador / Bundler | Combina, transpila y minifica el código fuente en un archivo `extension.js` optimizado, reduciendo la latencia de activación del plugin. |
-| **Mocha & Electron Test**| Suite de Pruebas | Orquesta las pruebas de integración (`xvfb-run npm test`) ejecutando una instancia *headless* del editor para verificar el flujo completo de los casos de uso. |
+| Tecnología / Herramienta  | Rol en la Arquitectura | Propósito Funcional                                                                                                                       |
+| :------------------------ | :--------------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
+| **TypeScript (v5.x)**     | Lenguaje Principal     | Provee análisis estático y tipado fuerte, crucial para modelar las entidades de la capa de Dominio y asegurar contratos entre capas.      |
+| **VS Code Extension API** | Entorno de Ejecución   | Provee la interfaz programática (`vscode.*`) para la renderización de la UI nativa, el registro de comandos y el acceso al panel lateral. |
+| **Webpack (v5.x)**        | Empaquetador / Bundler | Combina, transpila y minifica el código fuente en un archivo `extension.js` optimizado, reduciendo la latencia de activación del plugin.  |
 
 ---
 
