@@ -2,7 +2,7 @@
 	"name": "portman",
 	"displayName": "Portman",
 	"description": "VS Code Plugin to manage processes/ports running on your device.",
-	"version": "1.1.4",
+	"version": "1.1.5",
 	"author": "Michaell Alavedra",
 	"publisher": "MichaellAlavedraMunayco",
 	"license": "MIT",
