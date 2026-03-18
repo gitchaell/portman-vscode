@@ -25,12 +25,18 @@ export class LinuxSSProcessTransformer implements ProcessTransformer {
 			// LISTEN 0 0 0.0.0.0:22 0.0.0.0:* users:(("sshd",pid=123,fd=3))
 			// 0      1 2 3          4         5
 
-			if (parts.length < 5) { continue; }
-			if (parts[0] === 'State' || parts[0] === 'Netid') { continue; }
+			if (parts.length < 5) {
+				continue;
+			}
+			if (parts[0] === 'State' || parts[0] === 'Netid') {
+				continue;
+			}
 
 			// Check if it's a listening socket
 			const state = parts[0];
-			if (state !== 'LISTEN') { continue; }
+			if (state !== 'LISTEN') {
+				continue;
+			}
 
 			const localAddress = parts[3];
 			const remoteAddress = parts[4];
@@ -43,8 +49,12 @@ export class LinuxSSProcessTransformer implements ProcessTransformer {
 			// users:(("sshd",pid=123,fd=3))
 			const [pid, program] = this.parseProcess(processInfo);
 
-			if (!localPort || !localHost) { continue; }
-			if (isNaN(+localPort)) { continue; }
+			if (!localPort || !localHost) {
+				continue;
+			}
+			if (isNaN(+localPort)) {
+				continue;
+			}
 
 			// If no PID found, we might still want to list it as unknown owner?
 			// The original code skipped if no PID/Program. I'll stick to that behavior or similar.
@@ -81,7 +91,9 @@ export class LinuxSSProcessTransformer implements ProcessTransformer {
 
 	parseAddress(address: string): [string, string] | [] {
 		const result = this.regExp.port.exec(address);
-		if (!result) { return []; }
+		if (!result) {
+			return [];
+		}
 		const [match, port] = result;
 		const host = address.replace(match, '');
 		return [host, port];

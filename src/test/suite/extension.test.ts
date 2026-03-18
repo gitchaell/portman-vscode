@@ -76,7 +76,6 @@ suite('Portman Test Suite', () => {
 						// Resolve early to prevent the test runner from killing its own process.
 						server.close();
 						resolve();
-
 					} catch (error) {
 						server.close();
 						reject(error);

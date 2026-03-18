@@ -11,7 +11,8 @@ import { SystemChecker } from '@/shared/infrastructure/SystemChecker';
 const execute = promisify(exec);
 const command = {
 	getAllNetstat: () => `netstat -a -b -n -o | findstr LISTENING`,
-	getAllPowerShell: () => `powershell -Command "Get-NetTCPConnection -State Listen | Select-Object -Property LocalAddress,LocalPort,OwningProcess"`,
+	getAllPowerShell: () =>
+		`powershell -Command "Get-NetTCPConnection -State Listen | Select-Object -Property LocalAddress,LocalPort,OwningProcess"`,
 	kill: (pid: string) => `taskkill /PID ${pid}`,
 };
 

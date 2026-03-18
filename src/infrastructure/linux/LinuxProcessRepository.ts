@@ -57,7 +57,10 @@ export class LinuxProcessRepository implements ProcessRepository {
 
 		if (hasNetstat) {
 			try {
-				const stdout = await this.executeSafely(command.getAllNetstat, asRootUser);
+				const stdout = await this.executeSafely(
+					command.getAllNetstat,
+					asRootUser,
+				);
 
 				if (stdout) {
 					const transformer = new LinuxProcessTransformer();
@@ -93,7 +96,10 @@ export class LinuxProcessRepository implements ProcessRepository {
 			.get<boolean>('asRootUser');
 
 		try {
-			await this.executeSafely((asRoot) => command.kill(process.id.value, asRoot), asRootUser);
+			await this.executeSafely(
+				(asRoot) => command.kill(process.id.value, asRoot),
+				asRootUser,
+			);
 		} catch (error: any) {
 			throw new CommandExecutionError(
 				`Failed to kill process ${process.id.value}. Error: ${error.message}.`,

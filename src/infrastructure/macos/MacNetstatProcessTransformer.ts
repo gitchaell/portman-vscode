@@ -22,7 +22,8 @@ export class MacNetstatProcessTransformer implements ProcessTransformer {
 			if (parts.length < 6) continue;
 
 			const protocolRaw = parts[0];
-			if (!protocolRaw.startsWith('tcp') && !protocolRaw.startsWith('udp')) continue;
+			if (!protocolRaw.startsWith('tcp') && !protocolRaw.startsWith('udp'))
+				continue;
 
 			const protocol = protocolRaw.startsWith('tcp') ? 'tcp' : 'udp';
 			const address = parts[3]; // 127.0.0.1.8080 or *.8080
